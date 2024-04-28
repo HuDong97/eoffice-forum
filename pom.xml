@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 继承Spring boot工程 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.dong</groupId>
+    <artifactId>eoffice-forum</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>eoffice-forum</name>
+    <description>eoffice-forum</description>
+
+    <modules>
+        <module>eoffice-forum-common</module>
+        <module>eoffice-forum-feign-api</module>
+        <module>eoffice-forum-gateway</module>
+        <module>eoffice-forum-model</module>
+        <module>eoffice-forum-service</module>
+        <module>eoffice-forum-test</module>
+        <module>eoffice-forum-utils</module>
+    </modules>
+
+    <properties>
+        <!--版本-->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-cloud.version>2022.0.5</spring-cloud.version>
+        <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
+        <hutool.version>5.8.25</hutool.version>
+        <mysql.version>8.2.0</mysql.version>
+        <org.projectlombok.version>1.18.20</org.projectlombok.version>
+
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- lombok 管理 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${org.projectlombok.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+    <!--对依赖包进行管理-->
+    <dependencyManagement>
+        <dependencies>
+            <!--spring cloud,后续开发组件不再需要指定版本号-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring cloud alibaba-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--mysql驱动依赖-->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!--hutool工具包-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!--内部依赖工程-->
+            <dependency>
+                <artifactId>eoffice-leadnews-feign-api</artifactId>
+                <groupId>com.eoffice</groupId>
+
+            </dependency>
+            <dependency>
+                <artifactId>eoffice-leadnews-common</artifactId>
+                <groupId>com.eoffice</groupId>
+
+            </dependency>
+            <dependency>
+                <artifactId>eoffice-leadnews-model</artifactId>
+                <groupId>com.eoffice</groupId>
+
+            </dependency>
+            <dependency>
+                <artifactId>eoffice-leadnews-utils</artifactId>
+                <groupId>com.eoffice</groupId>
+
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
+
+    </build>
+
+</project>
