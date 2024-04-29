@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dong</groupId>
-        <artifactId>eoffice-forum</artifactId>
+        <artifactId>eoffice-forum-service</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>eoffice-forum-utils</artifactId>
+    <artifactId>eoffice-forum-user</artifactId>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -17,14 +17,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
 
-        <!--java-jwt依赖-->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>4.4.0</version>
-        </dependency>
-    </dependencies>
 
 </project>

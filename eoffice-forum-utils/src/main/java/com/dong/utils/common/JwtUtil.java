@@ -1,0 +1,30 @@
+package com.dong.utils.common;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
+import java.util.Date;
+import java.util.Map;
+
+public class JwtUtil {
+//配置密钥为dong
+    private static final String KEY = "dong";
+	
+	//接收业务数据,生成token并返回
+    public static String genToken(Map<String, Object> claims) {
+        return JWT.create()
+                .withClaim("claims", claims)//添加载荷
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000*60*60*24))//添加过期时间一天
+                .sign(Algorithm.HMAC256(KEY));//指定算法,配置秘钥dong
+    }
+
+	//接收token,验证token,并返回业务数据
+    public static Map<String, Object> parseToken(String token) {
+        return JWT.require(Algorithm.HMAC256(KEY))
+                .build()
+                .verify(token)
+                .getClaim("claims")
+                .asMap();
+    }
+
+}
