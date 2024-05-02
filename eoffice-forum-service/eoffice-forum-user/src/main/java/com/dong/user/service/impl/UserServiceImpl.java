@@ -22,15 +22,13 @@ public class UserServiceImpl implements UserService {
     @Override
     //实现接口方法，通过输入邮箱查询用户
     public User findByEmail(String email) {
-        User userFindByEmail = userMapper.findByEmail(email);
-        return userFindByEmail;
+        return userMapper.findByEmail(email);
     }
 
     @Override
     //实现接口方法，通过用户名查询用户
     public User findByUserName(String username) {
-        User userFindByUserName = userMapper.findByUserName(username);
-        return userFindByUserName;
+        return userMapper.findByUserName(username);
     }
 
     @Override
@@ -80,8 +78,7 @@ public class UserServiceImpl implements UserService {
     //通过用户名查找邮箱
     @Override
     public String findEmailByUserName(String username) {
-        String findEmailByUserName = userMapper.findEmailByUserName(username);
-        return findEmailByUserName;
+        return userMapper.findEmailByUserName(username);
     }
 
 

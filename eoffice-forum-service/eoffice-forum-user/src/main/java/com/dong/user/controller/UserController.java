@@ -36,7 +36,7 @@ public class UserController {
 
     //用户注册
     @PostMapping("/register")
-    public Result register(String username, String password, String email) {
+    public Result<String> register(String username, String password, String email) {
 
         //调用校验工具类
         if (!MessageValidator.isValidUsername(username)) {
@@ -120,7 +120,7 @@ public class UserController {
 
     //更新用户昵称
     @PatchMapping("/updateNickname")
-    public Result updateNickname(@RequestParam  String nickname) {
+    public Result<String> updateNickname(@RequestParam  String nickname) {
         userService.updateNickname(nickname);
         return Result.success();
     }
@@ -128,14 +128,14 @@ public class UserController {
 
     //更新用户头像
     @PatchMapping("updateAvatar")
-    public Result updateAvatar(@RequestParam @URL String avatarUrl) {
+    public Result<String> updateAvatar(@RequestParam @URL String avatarUrl) {
         userService.updateAvatar(avatarUrl);
         return Result.success();
     }
 
     //更新用户密码
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> params,@RequestHeader("Authorization") String token) {
+    public Result<String> updatePwd(@RequestBody Map<String, String> params,@RequestHeader("Authorization") String token) {
         //1.校验参数
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
@@ -172,7 +172,7 @@ public class UserController {
 
     //更新用户邮箱
     @PatchMapping("/updateEmail")
-    public Result updateEmail(@RequestBody Map<String, String> params) {
+    public Result<String> updateEmail(@RequestBody Map<String, String> params) {
         try {
             // 1. 校验参数
             String reEmail = params.get("re_Email");

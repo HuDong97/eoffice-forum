@@ -3,6 +3,7 @@ package com.dong.user.interceptors;
 
 import com.dong.utils.common.JwtUtil;
 import com.dong.utils.thread.ThreadLocalUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         // 在请求处理之前进行拦截
 
         // 从请求头中获取 Authorization 参数
@@ -54,12 +55,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, ModelAndView modelAndView) throws Exception {
         // 在请求处理之后但视图渲染之前执行
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) throws Exception {
         // 在请求处理完全完成后执行，通常用于资源清理工作
         ThreadLocalUtil.remove();
 
