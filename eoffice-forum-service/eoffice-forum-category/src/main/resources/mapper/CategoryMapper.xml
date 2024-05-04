@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 映射器的命名空间-->
+<mapper namespace="com.eoffice.category.mapper.CategoryMapper">
+
+    <!-- 新增分类-->
+    <insert id="add">
+        insert into category(category_name, category_alias, create_user, create_time, update_time)
+        values (#{categoryName}, #{categoryAlias}, #{createUser}, #{createTime}, #{updateTime})
+
+    </insert>
+
+    <!-- 通过创建人id查询展示文章分类列表-->
+    <select id="list" resultType="com.dong.model.category.pojos.Category">
+        select *
+        from category
+        where create_user = #{userId}
+    </select>
+
+    <!-- 通过id查询单个文章分类详细信息-->
+    <select id="findById" resultType="com.dong.model.category.pojos.Category">
+        select *
+        from category
+        where id = #{id}
+    </select>
+    <!-- 更新文章分类信息 -->
+    <update id="update">
+        update category
+        set category_name=#{categoryName},
+            category_alias=#{categoryAlias},
+            update_time=#{updateTime}
+        where id = #{id}
+    </update>
+
+    <!-- 删除文章分类-->
+    <delete id="deleteById">
+        delete from category where id=#{id}
+    </delete>
+
+</mapper>

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- 映射器的命名空间-->
-<mapper namespace="com.dong.user.mapper.UserMapper">
+<mapper namespace="com.eoffice.user.mapper.UserMapper">
 
     <!--通过输入邮箱查询用户 -->
     <select id="findByEmail" resultType="com.dong.model.user.pojos.User">
