@@ -1,12 +1,12 @@
 package com.eoffice.user.controller;
 
-import com.dong.common.advice.Result;
-import com.dong.model.user.pojos.User;
+import com.eoffice.common.advice.Result;
+import com.eoffice.model.user.pojos.User;
 import com.eoffice.user.service.UserService;
-import com.dong.utils.common.JwtUtil;
-import com.dong.utils.common.Md5Util;
-import com.dong.utils.common.MessageValidator;
-import com.dong.utils.thread.ThreadLocalUtil;
+import com.eoffice.utils.common.JwtUtil;
+import com.eoffice.utils.common.Md5Util;
+import com.eoffice.utils.common.MessageValidator;
+import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

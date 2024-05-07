@@ -1,10 +1,10 @@
 package com.eoffice.user.service.impl;
 
-import com.dong.model.user.pojos.User;
+import com.eoffice.model.user.pojos.User;
 import com.eoffice.user.mapper.UserMapper;
 import com.eoffice.user.service.UserService;
-import com.dong.utils.common.Md5Util;
-import com.dong.utils.thread.ThreadLocalUtil;
+import com.eoffice.utils.common.Md5Util;
+import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

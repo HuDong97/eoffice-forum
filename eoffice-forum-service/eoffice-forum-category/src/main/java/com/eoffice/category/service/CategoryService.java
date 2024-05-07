@@ -1,7 +1,7 @@
 package com.eoffice.category.service;
 
 
-import com.dong.model.category.pojos.Category;
+import com.eoffice.model.category.pojos.Category;
 
 import java.util.List;
 

@@ -7,14 +7,14 @@
 <mapper namespace="com.eoffice.user.mapper.UserMapper">
 
     <!--通过输入邮箱查询用户 -->
-    <select id="findByEmail" resultType="com.dong.model.user.pojos.User">
+    <select id="findByEmail" resultType="com.eoffice.model.user.pojos.User">
         select *
         from user
         where email = #{email}
     </select>
 
     <!--   通过用户名查询用户-->
-    <select id="findByUserName" resultType="com.dong.model.user.pojos.User">
+    <select id="findByUserName" resultType="com.eoffice.model.user.pojos.User">
         select *
         from user
         where username = #{username}

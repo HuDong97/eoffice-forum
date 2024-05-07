@@ -1,8 +1,8 @@
 package com.eoffice.category.service.impl;
 
 
-import com.dong.model.category.pojos.Category;
-import com.dong.utils.thread.ThreadLocalUtil;
+import com.eoffice.model.category.pojos.Category;
+import com.eoffice.utils.thread.ThreadLocalUtil;
 import com.eoffice.category.mapper.CategoryMapper;
 import com.eoffice.category.service.CategoryService;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.eoffice.user.service;
 
 
-import com.dong.model.user.pojos.User;
+import com.eoffice.model.user.pojos.User;
 
 public interface UserService {
 

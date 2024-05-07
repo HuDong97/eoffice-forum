@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- 映射器的命名空间-->
-<mapper namespace="com.eoffice.category.mapper.ArticleMapper">
+<mapper namespace="com.eoffice.article.mapper.ArticleMapper">
 
    <!--新增文章-->
    <insert id="add">
@@ -14,7 +14,7 @@
    </insert>
 
     <!--  条件分页列表查询-->
-    <select id="list" resultType="com.dong.model.article.pojos.Article">
+    <select id="list" resultType="com.eoffice.model.article.pojos.Article">
         select * from article
         <where>
             <if test="categoryId!=null">
@@ -34,7 +34,7 @@
         delete from article where id=#{id}
     </delete>
     <!-- 通过id获取文章详情-->
-    <select id="findById" resultType="com.dong.model.article.pojos.Article">
+    <select id="findById" resultType="com.eoffice.model.article.pojos.Article">
         select * from article where id = #{id}
     </select>
 

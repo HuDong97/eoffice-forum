@@ -1,7 +1,7 @@
 package com.eoffice.category.mapper;
 
 
-import com.dong.model.category.pojos.Category;
+import com.eoffice.model.category.pojos.Category;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

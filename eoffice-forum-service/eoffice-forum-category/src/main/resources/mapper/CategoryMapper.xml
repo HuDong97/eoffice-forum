@@ -14,14 +14,14 @@
     </insert>
 
     <!-- 通过创建人id查询展示文章分类列表-->
-    <select id="list" resultType="com.dong.model.category.pojos.Category">
+    <select id="list" resultType="com.eoffice.model.category.pojos.Category">
         select *
         from category
         where create_user = #{userId}
     </select>
 
     <!-- 通过id查询单个文章分类详细信息-->
-    <select id="findById" resultType="com.dong.model.category.pojos.Category">
+    <select id="findById" resultType="com.eoffice.model.category.pojos.Category">
         select *
         from category
         where id = #{id}

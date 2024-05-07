@@ -1,7 +1,7 @@
 package com.eoffice.user.mapper;
 
 
-import com.dong.model.user.pojos.User;
+import com.eoffice.model.user.pojos.User;
 import org.apache.ibatis.annotations.Mapper;
 
 

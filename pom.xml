@@ -39,6 +39,7 @@
         <org.projectlombok.version>1.18.22</org.projectlombok.version>
         <spring-cloud.version>2021.0.0</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
+
         <mybatis-plus.version>3.4.3</mybatis-plus.version>
         <hutool.version>5.8.11</hutool.version>
         <mysql.version>8.0.28</mysql.version>
@@ -50,7 +51,7 @@
     <dependencyManagement>
         <!--需要显式地引入相应的依赖才能生效-->
         <dependencies>
-         <!--   &lt;!&ndash;spring cloud,后续开发组件不再需要指定版本号&ndash;&gt;
+            <!--spring cloud,后续开发组件不再需要指定版本号-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -59,14 +60,14 @@
                 <scope>import</scope>
             </dependency>
 
-            &lt;!&ndash;spring cloud alibaba&ndash;&gt;
+            <!--spring cloud alibaba-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>-->
+            </dependency>
 
             <!--spring-redis依赖-->
             <dependency>
@@ -144,33 +145,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
 
         <!-- lombok 管理 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-
-        <!-- 数据库驱动包管理-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <!-- mybatis plus 管理 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
-        <!--mybatis依赖-->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
 
         <!--hutool工具包-->
@@ -191,20 +170,9 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
-        <!--       &lt;!&ndash; Knife4j  &ndash;&gt;
-       <dependency>
-           <groupId>com.github.xiaoymin</groupId>
-           <artifactId>knife4j-spring-boot-starter</artifactId>
-           <version>3.0.3</version>
-       </dependency>-->
 
 
-        <!--单元测试-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+
 
 
     </dependencies>

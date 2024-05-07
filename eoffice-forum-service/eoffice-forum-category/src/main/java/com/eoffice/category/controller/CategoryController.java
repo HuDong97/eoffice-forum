@@ -1,7 +1,7 @@
 package com.eoffice.category.controller;
 
-import com.dong.common.advice.Result;
-import com.dong.model.category.pojos.Category;
+import com.eoffice.common.advice.Result;
+import com.eoffice.model.category.pojos.Category;
 import com.eoffice.category.service.CategoryService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
