@@ -2,6 +2,8 @@ server:
   port: 18083
 
 spring:
+  application:
+    name: eoffice-forum-category # 服务名称
   redis:
     host: 192.168.196.129
     port: 6379

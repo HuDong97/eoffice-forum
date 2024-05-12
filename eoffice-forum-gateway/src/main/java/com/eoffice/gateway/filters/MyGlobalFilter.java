@@ -1,3 +1,4 @@
+/*
 package com.eoffice.gateway.filters;
 
 
@@ -33,3 +34,4 @@ public class MyGlobalFilter implements GlobalFilter, Ordered {
         return 100;
     }
 }
+*/
