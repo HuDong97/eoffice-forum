@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    //给用户注册加入事务，要么全部成功要么全部失败
     //实现接口方法，用户注册，向数据库插入用户名 密码和邮箱
     public void register(String username, String password, String email) {
 

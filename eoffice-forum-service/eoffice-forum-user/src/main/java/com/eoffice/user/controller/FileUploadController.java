@@ -1,12 +1,17 @@
 package com.eoffice.user.controller;
 
 
+import com.eoffice.common.advice.Result;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RestController
 public class FileUploadController {
 
-/*    // 设置文件最大允许的大小为100KB
+    // 设置文件最大允许的大小为100KB
     private static final long MAX_FILE_SIZE_BYTES = 100 * 1024;
 
     @PostMapping("/upload")
@@ -23,6 +28,9 @@ public class FileUploadController {
         String filename = UUID.randomUUID() +originalFilename.substring(originalFilename.lastIndexOf("."));
         //file.transferTo(new File("C:\\Users\\胡行东\\Desktop\\files\\"+filename));
         String url = AliOssUtil.uploadFile(filename,file.getInputStream());
+
+
+
         return Result.success(url);
-    }*/
+    }
 }

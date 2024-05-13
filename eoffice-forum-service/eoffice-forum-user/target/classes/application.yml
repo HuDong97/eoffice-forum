@@ -1,8 +1,5 @@
 server:
   port: 18081
-logging:
-  level:
-    root: DEBUG
 
 spring:
   application:

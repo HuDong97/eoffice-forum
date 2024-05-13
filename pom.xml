@@ -27,6 +27,7 @@
         <module>eoffice-forum-service</module>
         <module>eoffice-forum-test</module>
         <module>eoffice-forum-utils</module>
+        <module>eoffice-forum-basic</module>
     </modules>
 
 
@@ -110,30 +111,8 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-
-
-            <!--内部依赖工程-->
-            <dependency>
-                <artifactId>eoffice-leadnews-feign-api</artifactId>
-                <groupId>com.eoffice</groupId>
-
-            </dependency>
-            <dependency>
-                <artifactId>eoffice-leadnews-common</artifactId>
-                <groupId>com.eoffice</groupId>
-
-            </dependency>
-            <dependency>
-                <artifactId>eoffice-leadnews-model</artifactId>
-                <groupId>com.eoffice</groupId>
-
-            </dependency>
-            <dependency>
-                <artifactId>eoffice-leadnews-utils</artifactId>
-                <groupId>com.eoffice</groupId>
-            </dependency>
-
         </dependencies>
+
     </dependencyManagement>
 
 
