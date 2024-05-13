@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: eoffice-forum-article # 服务名称
+    name: eoffice-forum-article
   redis:
     host: 192.168.196.129
     port: 6379

@@ -5,19 +5,22 @@ spring:
   application:
     name: eoffice-forum-gateway # 服务名称
   cloud:
+    loadbalancer:
+      nacos:
+        enabled: false
     gateway:
       routes:
-        - id: eoffice-forum-article
+        - id: eoffice-forum-article1
           uri: lb://eoffice-forum-article
           predicates:
             - Path=/article/**
 
-        - id: eoffice-forum-category
+        - id: eoffice-forum-category1
           uri: lb://eoffice-forum-category
           predicates:
             - Path=/category/**
 
-        - id: eoffice-forum-user
+        - id: eoffice-forum-user1
           uri: lb://eoffice-forum-user
           predicates:
             - Path=/user/**
