@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: eoffice-forum-user # 服务名称
   cloud:
     nacos:
       discovery:

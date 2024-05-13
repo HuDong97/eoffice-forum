@@ -1,27 +1,5 @@
-server:
-  port: 18080
-
 spring:
-  application:
-    name: eoffice-forum-gateway # 服务名称
   cloud:
-    gateway:
-      routes:
-        - id: eoffice-forum-article
-          uri: lb://eoffice-forum-article
-          predicates:
-            - Path=/article/**
-
-        - id: eoffice-forum-category
-          uri: lb://eoffice-forum-category
-          predicates:
-            - Path=/category/**
-
-        - id: eoffice-forum-user
-          uri: lb://eoffice-forum-user
-          predicates:
-            - Path=/user/**
-
     nacos:
       discovery:
         server-addr: 192.168.196.129:8848 # Nacos服务注册与发现
