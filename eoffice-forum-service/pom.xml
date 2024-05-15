@@ -26,6 +26,12 @@
 
         <dependency>
             <groupId>com.dong</groupId>
+            <artifactId>eoffice-forum-file</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dong</groupId>
             <artifactId>eoffice-forum-common</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -116,26 +122,14 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--minio-->
-        <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>7.1.0</version>
-        </dependency>
+
 
 
 
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 
 
 </project>

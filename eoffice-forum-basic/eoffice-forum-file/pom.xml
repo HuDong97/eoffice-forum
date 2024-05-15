@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dong</groupId>
-        <artifactId>eoffice-forum</artifactId>
+        <artifactId>eoffice-forum-basic</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>eoffice-forum-feign-api</artifactId>
+    <artifactId>eoffice-forum-file</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -17,40 +17,36 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
     <dependencies>
 
-
+        <!--minio-->
         <dependency>
-            <groupId>com.dong</groupId>
-            <artifactId>eoffice-forum-model</artifactId>
-            <version>1.0.0</version>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>7.1.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.dong</groupId>
-            <artifactId>eoffice-forum-common</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
-        <!-- OpenFeign 依赖 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 负载均衡器依赖 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
-        <!--openfeign核心-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-openfeign-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
 
     </dependencies>
-
 </project>
