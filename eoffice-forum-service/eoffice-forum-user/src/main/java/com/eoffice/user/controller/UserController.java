@@ -126,7 +126,7 @@ public class UserController {
 
 
     //更新用户头像
-    @PatchMapping("updateAvatar")
+    @PatchMapping("/updateAvatar")
     public Result<String> updateAvatar(@RequestParam @URL String avatarUrl) {
         userService.updateAvatar(avatarUrl);
         return Result.success();
@@ -143,7 +143,7 @@ public class UserController {
         if (!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
             return Result.error("缺少必要的参数");
         }
-        //调用校验工具类
+        //调用校验工具类处理文件名中的非法字符
         if (!MessageValidator.isValidPassword(newPwd)) {
             return Result.error("密码长度必须在5到16位之间,仅支持数字、英文大小写字母以及@#$%");
         }

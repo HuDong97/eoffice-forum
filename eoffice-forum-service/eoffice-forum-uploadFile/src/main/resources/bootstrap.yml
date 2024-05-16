@@ -8,3 +8,9 @@ spring:
         file-extension: yaml
 
 
+minio:
+  accessKey: minio
+  secretKey: minio123
+  bucket: eofficeforum
+  endpoint: http://192.168.196.129:9000
+  readPath: http://192.168.196.129:9000

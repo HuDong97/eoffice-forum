@@ -2,9 +2,8 @@ package com.eoffice.model.validation;
 
 
 import com.eoffice.model.anno.State;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 
 public class StateValidation implements ConstraintValidator<State,String> {

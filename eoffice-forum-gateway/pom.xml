@@ -44,12 +44,10 @@
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
 
+        <!-- 负载均衡器依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-            <version>3.0.3</version>
-            <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
 
     </dependencies>

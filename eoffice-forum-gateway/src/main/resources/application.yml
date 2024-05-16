@@ -1,5 +1,10 @@
 server:
   port: 18080
+#
+#logging:
+#  level:
+#    root: DEBUG
+
 
 spring:
   application:
@@ -24,3 +29,8 @@ spring:
           uri: lb://eoffice-forum-user
           predicates:
             - Path=/user/**
+
+        - id: eoffice-forum-uploadFile1
+          uri: lb://eoffice-forum-uploadFile
+          predicates:
+            - Path=/uploadFile/**
