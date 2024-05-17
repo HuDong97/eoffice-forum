@@ -6,6 +6,7 @@ import com.eoffice.uploadFile.service.FileUploadService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +23,7 @@ public class FileUploadController {
     }
 
     @PostMapping("/uploadPicture")
-    public Result<String> uploadFile(@NotNull MultipartFile multipartFile) throws Exception {
+    public Result<String> uploadFile(@NotNull @RequestParam("file") MultipartFile multipartFile) throws Exception {
         return fileUploadService.uploadPicture(multipartFile);
-
     }
 }

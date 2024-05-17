@@ -28,7 +28,7 @@
 
     <!--  更新数据库用户昵称-->
     <update id="updateNickname">
-        update user set nickname=#{nickname},update_time=now() where id=#{id}
+        update user set nickname=#{nickname},update_time=now() where id=#{userId}
     </update>
 
     <!-- 更新数据库用户头像-->
@@ -36,7 +36,7 @@
         update user
         set user_pic=#{avatarUrl},
             update_time=now()
-        where id = #{id}
+        where id = #{userId}
     </update>
 
     <!-- 更新数据库用户密码-->
@@ -44,7 +44,7 @@
         update user
         set password=#{md5String},
             update_time=now()
-        where id = #{id}
+        where id = #{userId}
     </update>
 
     <!--   通过用户名查询邮箱-->

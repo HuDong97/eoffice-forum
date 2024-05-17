@@ -1,15 +1,14 @@
 package com.eoffice.category.service.impl;
 
 
-import com.eoffice.model.category.pojos.Category;
-import com.eoffice.utils.thread.ThreadLocalUtil;
 import com.eoffice.category.mapper.CategoryMapper;
 import com.eoffice.category.service.CategoryService;
+import com.eoffice.model.category.pojos.Category;
+import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -30,8 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setUpdateTime(LocalDateTime.now());
 
         //id从ThreadLocalUtil获取
-        Map<String,Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
+        Integer userId = ThreadLocalUtil.getUser("id");
         category.setCreateUser(userId);
         categoryMapper.add(category);
 
@@ -42,8 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     //通过创建人id查询展示文章分类列表
     @Override
     public List<Category> list() {
-        Map<String,Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
+        Integer userId = ThreadLocalUtil.getUser("id");
         return categoryMapper.list(userId);
     }
 

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -38,8 +37,8 @@ public class FileUploadServiceImpl implements FileUploadService {
             return Result.error("文件不能为空");
         }
         //1.1检查文件大小
-        if (multipartFile.getSize() > FileSizeEnum.MEDIUM.getSizeInBytes()) {
-            return Result.error("文件大小超过限制，最大允许为100KB");
+        if (multipartFile.getSize() > FileSizeEnum.BIG.getSizeInBytes()) {
+            return Result.error("文件大小超过限制，最大允许为500K");
         }
 
         // 2.上传图片到MinIO中，拼接用户名防止重名
@@ -51,7 +50,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         String originalFilename = multipartFile.getOriginalFilename();
 
         // 调用校验工具类处理文件名中的非法字符
-        if (originalFilename == null || !MessageValidator.isValidOriginalFilename(originalFilename)) {
+        if (originalFilename == null || MessageValidator.isValidOriginalFilename(originalFilename)) {
             return Result.error("文件名只支持数字、中文、英文大小写字母");
         }
 
@@ -69,17 +68,15 @@ public class FileUploadServiceImpl implements FileUploadService {
             // 捕获可能的IO异常
             e.printStackTrace();
             return Result.error("文件上传服务器失败");
-
-
         }
 
 
         //3.保存图片链接到数据库中
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer id = (Integer) map.get("id");
-        fileUploadMapper.updateAvatar(fileId, id);
+        Integer userId = ThreadLocalUtil.getUser("id");
+        fileUploadMapper.updateAvatar(fileId, userId);
 
         //4.返回结果
-        return Result.success();
+        // 返回文件ID给前端
+        return Result.success(fileId);
     }
 }

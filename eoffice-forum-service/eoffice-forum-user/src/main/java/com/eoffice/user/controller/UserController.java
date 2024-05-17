@@ -99,6 +99,7 @@ public class UserController {
             ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
             operations.set(token,token,24, TimeUnit.HOURS);
 
+            ThreadLocalUtil.setUser(claims);  // 设置用户信息到ThreadLocal
 
             return Result.success(token);//返回jwt令牌
         }
@@ -109,8 +110,7 @@ public class UserController {
     //根据用户名查询用户,用户名从ThreadLocalUtil获取
     @GetMapping("/userInfo")
     public Result<User> userInfo() {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String username = (String) map.get("username");
+        String username = ThreadLocalUtil.getUser("username");
         User user = userService.findByUserName(username);
         return Result.success(user);
     }
@@ -149,8 +149,7 @@ public class UserController {
         }
 
         //调用userService根据用户名获取密码和old_pwd比对,用户名从ThreadLocalUtil获取
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String username = (String) map.get("username");
+        String username = ThreadLocalUtil.getUser("username");
         User loginUser = userService.findByUserName(username);
         if (!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
             return Result.error("原密码填写不正确");
@@ -178,8 +177,7 @@ public class UserController {
             String newEmail = params.get("new_Email");
 
             // 通过用户名获取邮箱和确认邮箱比对,用户名从ThreadLocalUtil获取
-            Map<String, Object> map = ThreadLocalUtil.get();
-            String username = (String) map.get("username");
+            String username = ThreadLocalUtil.getUser("username");
             String userEmail = userService.findEmailByUserName(username);
 
             // 字符串比较

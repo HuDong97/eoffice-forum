@@ -9,6 +9,7 @@ import lombok.Getter;
 public enum FileSizeEnum {
     SMALL(10 * 1024), // 定义 SMALL 枚举常量，表示小文件大小为 10 KB
     MEDIUM(100 * 1024), // 定义 MEDIUM 枚举常量，表示中等文件大小为 100 KB
+    BIG(5*100 * 1024), // 定义 MEDIUM 枚举常量，表示中等文件大小为 500 KB
     LARGE(1024 * 1024), // 定义 LARGE 枚举常量，表示大文件大小为 1 MB
     EXTRA_LARGE(10 * 1024 * 1024); // 定义 EXTRA_LARGE 枚举常量，表示额外大文件大小为 10 MB
 

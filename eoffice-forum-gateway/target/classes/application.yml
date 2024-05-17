@@ -1,7 +1,17 @@
 server:
   port: 18080
+#
+#logging:
+#  level:
+#    root: DEBUG
+
 
 spring:
+  data:
+    redis:
+      host: 192.168.196.129
+      port: 6379
+      password: dong97
   application:
     name: eoffice-forum-gateway # 服务名称
   cloud:
@@ -24,3 +34,8 @@ spring:
           uri: lb://eoffice-forum-user
           predicates:
             - Path=/user/**
+
+        - id: eoffice-forum-uploadFile1
+          uri: lb://eoffice-forum-uploadFile
+          predicates:
+            - Path=/uploadFile/**

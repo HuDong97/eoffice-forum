@@ -1,18 +1,17 @@
 package com.eoffice.article.service.impl;
 
 
+import com.eoffice.article.mapper.ArticleMapper;
+import com.eoffice.article.service.ArticleService;
 import com.eoffice.model.article.dtos.PageBean;
 import com.eoffice.model.article.pojos.Article;
 import com.eoffice.utils.thread.ThreadLocalUtil;
-import com.eoffice.article.service.ArticleService;
-import com.eoffice.article.mapper.ArticleMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -32,9 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setUpdateTime(LocalDateTime.now());
 
         //从ThreadLocal获取当前登录用户id，设置为文章创建人id
-        Map<String,Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
-
+        Integer userId = ThreadLocalUtil.getUser("id");
         article.setCreateUser(userId);
 
         articleMapper.add(article);
@@ -53,8 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
         PageHelper.startPage(pageNum,pageSize);
 
         //3.调用mapper
-        Map<String,Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
+        Integer userId = ThreadLocalUtil.getUser("id");
 
         List<Article> as = articleMapper.list(userId,categoryId,state);
 

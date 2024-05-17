@@ -8,8 +8,6 @@ import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
@@ -49,27 +47,25 @@ public class UserServiceImpl implements UserService {
     //更新用户昵称
     @Override
     public void updateNickname(String nickname) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer id = (Integer) map.get("id");
-        userMapper.updateNickname(nickname,id);
+
+        Integer userId = ThreadLocalUtil.getUser("id");
+        userMapper.updateNickname(nickname,userId);
     }
 
     //实现接口方法，更新用户头像，id从ThreadLocalUtil获取
     @Override
     public void updateAvatar(String avatarUrl) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer id = (Integer) map.get("id");
-        userMapper.updateAvatar(avatarUrl, id);
+        Integer userId = ThreadLocalUtil.getUser("id");
+        userMapper.updateAvatar(avatarUrl, userId);
 
     }
 
     //实现接口方法，更新用户密码，id从ThreadLocalUtil获取
     @Override
     public void updatePwd(String newPwd) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer id = (Integer) map.get("id");
+        Integer userId = ThreadLocalUtil.getUser("id");
         //对用户输入进数据库的密码进行MD5加密
-        userMapper.updatePwd(Md5Util.getMD5String(newPwd), id);
+        userMapper.updatePwd(Md5Util.getMD5String(newPwd), userId);
 
     }
 

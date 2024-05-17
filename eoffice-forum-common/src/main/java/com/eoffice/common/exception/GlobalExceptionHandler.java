@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 //用于全局处理控制器（Controller）层的异常
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public Result handleException(Exception e){
+    public Result<String> handleException(Exception e){
         e.printStackTrace();
         return Result.error(StringUtils.hasLength(e.getMessage())? e.getMessage() : "操作失败");
     }

@@ -20,6 +20,12 @@
     <dependencies>
 
 
+        <dependency>
+            <groupId>com.dong</groupId>
+            <artifactId>eoffice-forum-utils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!--集成网关服务依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
