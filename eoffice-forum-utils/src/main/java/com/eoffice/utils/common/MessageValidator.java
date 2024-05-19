@@ -19,8 +19,11 @@ public class MessageValidator {
         return password.matches(PASSWORD_REGEX);
     }
 
-    // 上传文件原始名称校验，仅支持数字、中文、英文大小写字母
-    private static final String NAME_REGEX = "^[A-Za-z0-9\\u4e00-\\u9fa5]+$";
+    // 上传文件原始名称校验，仅支持数字、中文、英文大小写字母及()（）
+    private static final String NAME_REGEX = "^[A-Za-z0-9\\u4e00-\\u9fa5()（）\\s[^/\\\\:*?\"<>|]]{1,255}$";
+
+
+
     public static boolean isValidOriginalFilename(String originalFilename) {
         return originalFilename.matches(NAME_REGEX);
     }
