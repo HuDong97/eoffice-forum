@@ -93,6 +93,7 @@ public class UserController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
+            claims.put("permissions",loginUser.getPermissions());
             String token = JwtUtil.genToken(claims);
 
             //把token存储到redis中，过期时间为24小时，与令牌过期时间相同
