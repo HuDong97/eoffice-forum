@@ -8,8 +8,8 @@
 
     <!-- 新增分类-->
     <insert id="add">
-        insert into category(category_name, category_alias, create_user, create_time, update_time)
-        values (#{categoryName}, #{categoryAlias}, #{createUser}, #{createTime}, #{updateTime})
+        insert into category(category_name, category_count, create_user, create_time, update_time)
+        values (#{categoryName}, #{categoryCount}, #{createUser}, #{createTime}, #{updateTime})
 
     </insert>
 
@@ -25,7 +25,7 @@
     <update id="update">
         update category
         set category_name=#{categoryName},
-            category_alias=#{categoryAlias},
+            category_count=#{categoryCount},
             update_time=#{updateTime}
         where id = #{id}
     </update>

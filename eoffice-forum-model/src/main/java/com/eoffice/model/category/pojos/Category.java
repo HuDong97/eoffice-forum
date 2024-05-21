@@ -21,7 +21,7 @@ public class Category {
     private Integer id;//主键ID
     @NotEmpty(groups = {Update.class, Add.class})
     private String categoryName;//分类名称
-    private String categoryAlias;//分类别名
+    private Integer categoryCount;//使用次数
     private Integer createUser;//创建人ID
 
     //定义json字符串时间格式

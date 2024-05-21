@@ -59,14 +59,7 @@ public class AuthorizeFilter implements Ordered, GlobalFilter {
 
             //把业务数据存储到ThreadLocalUtil中
             ThreadLocalUtil.setUser(claims);
-            // 获取用户权限
-            String permissions = (String) claims.get("permissions");
 
-            // 如果请求路径是 /category，且用户权限不是 admin，则拦截请求
-            if (request.getURI().getPath().contains("/category") && !"admin".equals(permissions)) {
-                response.setStatusCode(HttpStatus.FORBIDDEN);
-                return response.setComplete();
-            }
             // 如果验证通过，放行请求
             return chain.filter(exchange);
         } catch (Exception e) {
