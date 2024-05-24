@@ -10,12 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ToolsController {
 
-
-    private final ChatServiceClient chatServiceClient;
-
-    public ToolsController(ChatServiceClient chatServiceClient) {
-        this.chatServiceClient = chatServiceClient;
-    }
+    @Autowired
+    private ChatServiceClient chatServiceClient;
 
     @GetMapping("/invokeChat3")
     public String invokeChat3(@RequestParam("msg") String msg) {

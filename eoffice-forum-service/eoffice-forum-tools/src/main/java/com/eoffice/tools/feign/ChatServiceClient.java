@@ -1,11 +1,13 @@
 package com.eoffice.tools.feign;
 
+
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 
-@FeignClient(name = "spring-ai-chat", url = "http://localhost:8080")
+@FeignClient(name = "spring-ai-chat", url = "http://localhost:28080")  // 指向聊天单体项目的URL
 public interface ChatServiceClient {
 
     @GetMapping("/ai/chat3")
