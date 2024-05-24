@@ -28,6 +28,7 @@
         <module>eoffice-forum-utils</module>
         <module>eoffice-forum-basic</module>
         <module>eoffice-forum-basic/eoffice-file-starter</module>
+
     </modules>
 
     <properties>

@@ -16,6 +16,7 @@
         <module>eoffice-forum-article</module>
         <module>eoffice-forum-category</module>
         <module>eoffice-forum-uploadFile</module>
+        <module>eoffice-forum-tools</module>
     </modules>
 
     <properties>
@@ -24,6 +25,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+
+
 
 
 
