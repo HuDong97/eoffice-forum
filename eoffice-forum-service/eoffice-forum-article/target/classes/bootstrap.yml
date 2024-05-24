@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.196.129:8848 # Nacos服务注册与发现
-      config:
-        server-addr: 192.168.196.129:8848 # Nacos配置中心
-        file-extension: yaml
