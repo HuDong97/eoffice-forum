@@ -17,6 +17,7 @@
         <module>eoffice-forum-category</module>
         <module>eoffice-forum-uploadFile</module>
         <module>eoffice-forum-tools</module>
+        <module>eoffice-forum-userBehavior</module>
     </modules>
 
     <properties>
