@@ -9,9 +9,9 @@ server:
 spring:
   data:
     redis:
-      host: 192.168.196.129
+      host: *********
       port: 6379
-      password: dong97
+      password: *****
   application:
     name: eoffice-forum-gateway # 服务名称
   cloud:
