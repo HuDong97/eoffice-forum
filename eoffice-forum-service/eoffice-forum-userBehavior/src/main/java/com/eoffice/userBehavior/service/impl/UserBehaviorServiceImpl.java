@@ -7,11 +7,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserBehaviorServiceImpl implements UserBehaviorService {
-
 
     private static final long CACHE_EXPIRATION_DAYS = 1;
 
@@ -19,11 +20,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     private UserBehaviorMapper userBehaviorMapper;
 
     @Autowired
-    private RedisTemplate<String, Integer> redisTemplate;
-
-
-
-
+    private RedisTemplate<String, Map<String, Integer>> redisTemplate;
 
     @Override
     @Transactional
@@ -54,40 +51,26 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     }
 
     @Override
-    public int getLikesCount(Integer articleId) {
-        return getArticleCountFromRedis("likesCount", articleId, userBehaviorMapper::selectLikesCount);
-    }
-
-    @Override
-    public int getFavoritesCount(Integer articleId) {
-        return getArticleCountFromRedis("favoritesCount", articleId, userBehaviorMapper::selectFavoritesCount);
-    }
-
-    @Override
-    public int getCommentsCount(Integer articleId) {
-        return getArticleCountFromRedis("commentsCount", articleId, userBehaviorMapper::selectCommentsCount);
-    }
-
-    @Override
-    public int getViewsCount(Integer articleId) {
-        return getArticleCountFromRedis("viewsCount", articleId, userBehaviorMapper::selectViewsCount);
-    }
-
-    private int getArticleCountFromRedis(String type, Integer articleId, java.util.function.Function<Integer, Integer> dbQuery) {
-        String key = type + ":" + articleId;
-        Integer count = redisTemplate.opsForValue().get(key);
-        if (count == null) {
-            count = dbQuery.apply(articleId);
-            redisTemplate.opsForValue().set(key, count, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+    public Map<String, Integer> getArticleCounts(Integer articleId) {
+        String key = "articleCounts:" + articleId;
+        Map<String, Integer> counts = redisTemplate.opsForValue().get(key);
+        if (counts == null) {
+            counts = new HashMap<>();
+            counts.put("likesCount", userBehaviorMapper.selectLikesCount(articleId));
+            counts.put("favoritesCount", userBehaviorMapper.selectFavoritesCount(articleId));
+            counts.put("commentsCount", userBehaviorMapper.selectCommentsCount(articleId));
+            counts.put("viewsCount", userBehaviorMapper.selectViewsCount(articleId));
+            redisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
         }
-        return count;
+        return counts;
     }
 
-    @Override
     public void updateArticleCountsInRedis(Integer articleId) {
-        redisTemplate.opsForValue().set("likesCount:" + articleId, userBehaviorMapper.selectLikesCount(articleId), CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
-        redisTemplate.opsForValue().set("favoritesCount:" + articleId, userBehaviorMapper.selectFavoritesCount(articleId), CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
-        redisTemplate.opsForValue().set("commentsCount:" + articleId, userBehaviorMapper.selectCommentsCount(articleId), CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
-        redisTemplate.opsForValue().set("viewsCount:" + articleId, userBehaviorMapper.selectViewsCount(articleId), CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("likesCount", userBehaviorMapper.selectLikesCount(articleId));
+        counts.put("favoritesCount", userBehaviorMapper.selectFavoritesCount(articleId));
+        counts.put("commentsCount", userBehaviorMapper.selectCommentsCount(articleId));
+        counts.put("viewsCount", userBehaviorMapper.selectViewsCount(articleId));
+        redisTemplate.opsForValue().set("articleCounts:" + articleId, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
     }
 }

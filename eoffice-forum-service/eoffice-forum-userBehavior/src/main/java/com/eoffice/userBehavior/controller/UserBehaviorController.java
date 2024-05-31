@@ -4,6 +4,8 @@ import com.eoffice.userBehavior.service.UserBehaviorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/userBehavior")
 public class UserBehaviorController {
@@ -35,23 +37,8 @@ public class UserBehaviorController {
         userBehaviorService.setViewArticle(userId, articleId);
     }
 
-    @GetMapping("/likesCount/{articleId}")
-    public int getLikesCount(@PathVariable Integer articleId) {
-        return userBehaviorService.getLikesCount(articleId);
-    }
-
-    @GetMapping("/favoritesCount/{articleId}")
-    public int getFavoritesCount(@PathVariable Integer articleId) {
-        return userBehaviorService.getFavoritesCount(articleId);
-    }
-
-    @GetMapping("/commentsCount/{articleId}")
-    public int getCommentsCount(@PathVariable Integer articleId) {
-        return userBehaviorService.getCommentsCount(articleId);
-    }
-
-    @GetMapping("/viewsCount/{articleId}")
-    public int getViewsCount(@PathVariable Integer articleId) {
-        return userBehaviorService.getViewsCount(articleId);
+    @GetMapping("/counts/{articleId}")
+    public Map<String, Integer> getArticleCounts(@PathVariable Integer articleId) {
+        return userBehaviorService.getArticleCounts(articleId);
     }
 }
