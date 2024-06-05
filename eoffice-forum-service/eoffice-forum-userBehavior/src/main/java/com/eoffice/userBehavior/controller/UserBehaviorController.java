@@ -37,8 +37,8 @@ public class UserBehaviorController {
         userBehaviorService.setViewArticle(userId, articleId);
     }
 
-    @GetMapping("/counts/{articleId}")
-    public Map<String, Integer> getArticleCounts(@PathVariable Integer articleId) {
+    @GetMapping("/counts")
+    public Map<String, Integer> getArticleCounts(@RequestParam Integer articleId) {
         return userBehaviorService.getArticleCounts(articleId);
     }
 }
