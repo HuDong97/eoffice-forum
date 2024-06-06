@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class UserBehaviorServiceImpl implements UserBehaviorService {
 
     private static final long CACHE_EXPIRATION_DAYS = 1;
+    private static final String CACHE_PREFIX = "articleCounts:";
 
     @Autowired
     private UserBehaviorMapper userBehaviorMapper;
@@ -52,25 +53,31 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
     @Override
     public Map<String, Integer> getArticleCounts(Integer articleId) {
-        String key = "articleCounts:" + articleId;
+        String key = CACHE_PREFIX + articleId;
         Map<String, Integer> counts = redisTemplate.opsForValue().get(key);
         if (counts == null) {
-            counts = new HashMap<>();
-            counts.put("likesCount", userBehaviorMapper.selectLikesCount(articleId));
-            counts.put("favoritesCount", userBehaviorMapper.selectFavoritesCount(articleId));
-            counts.put("commentsCount", userBehaviorMapper.selectCommentsCount(articleId));
-            counts.put("viewsCount", userBehaviorMapper.selectViewsCount(articleId));
-            redisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+            counts = fetchArticleCountsFromDB(articleId);
+            cacheArticleCounts(articleId, counts);
         }
         return counts;
     }
 
-    public void updateArticleCountsInRedis(Integer articleId) {
+    private Map<String, Integer> fetchArticleCountsFromDB(Integer articleId) {
         Map<String, Integer> counts = new HashMap<>();
         counts.put("likesCount", userBehaviorMapper.selectLikesCount(articleId));
         counts.put("favoritesCount", userBehaviorMapper.selectFavoritesCount(articleId));
         counts.put("commentsCount", userBehaviorMapper.selectCommentsCount(articleId));
         counts.put("viewsCount", userBehaviorMapper.selectViewsCount(articleId));
-        redisTemplate.opsForValue().set("articleCounts:" + articleId, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+        return counts;
+    }
+
+    private void cacheArticleCounts(Integer articleId, Map<String, Integer> counts) {
+        String key = CACHE_PREFIX + articleId;
+        redisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+    }
+
+    public void updateArticleCountsInRedis(Integer articleId) {
+        Map<String, Integer> counts = fetchArticleCountsFromDB(articleId);
+        cacheArticleCounts(articleId, counts);
     }
 }

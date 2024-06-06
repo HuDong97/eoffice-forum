@@ -1,5 +1,5 @@
 package com.eoffice.userBehavior.controller;
-
+import com.eoffice.common.advice.Result;
 import com.eoffice.userBehavior.service.UserBehaviorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +18,32 @@ public class UserBehaviorController {
     }
 
     @PostMapping("/like")
-    public void setLikeArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
+    public Result<String> setLikeArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
         userBehaviorService.setLikeArticle(userId, articleId);
+        return Result.success();
     }
 
     @PostMapping("/favorite")
-    public void setFavoriteArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
+    public Result<String> setFavoriteArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
         userBehaviorService.setFavoriteArticle(userId, articleId);
+        return Result.success();
     }
 
     @PostMapping("/comment")
-    public void setCommentArticle(@RequestParam Integer userId, @RequestParam Integer articleId, @RequestParam String content) {
+    public Result<String> setCommentArticle(@RequestParam Integer userId, @RequestParam Integer articleId, @RequestParam String content) {
         userBehaviorService.setCommentArticle(userId, articleId, content);
+        return Result.success();
     }
 
     @PostMapping("/view")
-    public void setViewArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
+    public Result<String> setViewArticle(@RequestParam Integer userId, @RequestParam Integer articleId) {
         userBehaviorService.setViewArticle(userId, articleId);
+        return Result.success();
     }
 
     @GetMapping("/counts")
-    public Map<String, Integer> getArticleCounts(@RequestParam Integer articleId) {
-        return userBehaviorService.getArticleCounts(articleId);
+    public Result<Map<String, Integer>> getArticleCounts(@RequestParam Integer articleId) {
+        Map<String, Integer> counts = userBehaviorService.getArticleCounts(articleId);
+        return Result.success(counts);
     }
 }
