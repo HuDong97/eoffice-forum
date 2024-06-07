@@ -3,6 +3,7 @@ package com.eoffice.userBehavior.service.impl;
 import com.eoffice.userBehavior.mapper.UserBehaviorMapper;
 import com.eoffice.userBehavior.service.UserBehaviorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     private UserBehaviorMapper userBehaviorMapper;
 
     @Autowired
-    private RedisTemplate<String, Map<String, Integer>> redisTemplate;
+    @Qualifier("userBehaviorRedisTemplate")
+    private RedisTemplate<String, Map<String, Integer>> userBehaviorRedisTemplate;
 
     @Override
     @Transactional
@@ -54,7 +56,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     @Override
     public Map<String, Integer> getArticleCounts(Integer articleId) {
         String key = CACHE_PREFIX + articleId;
-        Map<String, Integer> counts = redisTemplate.opsForValue().get(key);
+        Map<String, Integer> counts = userBehaviorRedisTemplate.opsForValue().get(key);
         if (counts == null) {
             counts = fetchArticleCountsFromDB(articleId);
             cacheArticleCounts(articleId, counts);
@@ -73,7 +75,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
     private void cacheArticleCounts(Integer articleId, Map<String, Integer> counts) {
         String key = CACHE_PREFIX + articleId;
-        redisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+        userBehaviorRedisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
     }
 
     public void updateArticleCountsInRedis(Integer articleId) {
