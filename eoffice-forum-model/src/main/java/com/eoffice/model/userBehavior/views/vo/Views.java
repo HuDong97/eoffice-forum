@@ -1,4 +1,4 @@
-package com.eoffice.model.userBehavior.likes.vo;
+package com.eoffice.model.userBehavior.views.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class likes {
+public class Views {
     @NotNull
     private Integer id;
     @NotNull
@@ -17,5 +17,5 @@ public class likes {
     @NotNull
     private Integer articleId;
     @NotNull
-    private LocalDateTime created_time;
+    private LocalDateTime createTime;
 }

@@ -17,7 +17,8 @@ public class Favorites {
     @NotNull
     private Integer articleId;
     @NotNull
-    private LocalDateTime created_time;
+    private LocalDateTime createTime;
+
 
 
 

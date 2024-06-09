@@ -75,4 +75,5 @@ public class RedisConfig {
         template.setHashValueSerializer(serializer);
         return template;
     }
+
 }

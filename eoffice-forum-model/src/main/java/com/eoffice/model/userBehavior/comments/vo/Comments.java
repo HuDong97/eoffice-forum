@@ -20,5 +20,5 @@ public class Comments {
     @NotNull
     private String content;
     @NotNull
-    private LocalDateTime created_time;
+    private LocalDateTime createTime;
 }

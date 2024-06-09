@@ -14,10 +14,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
-
+    private static final long CACHE_EXPIRATION_DAYS = 1;
     private final ArticleMapper articleMapper;
     private final RedisTemplate<String, Article> articleRedisTemplate;
 
@@ -49,26 +50,34 @@ public class ArticleServiceImpl implements ArticleService {
         if (article == null) {
             article = articleMapper.findById(id);
             if (article != null) {
-                articleRedisTemplate.opsForValue().set(key, article);
+                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
             }
         }
         return article;
     }
 
-    // 更新文章，先更新Redis数据，再更新数据库数据
     @Override
     public void update(Article article) {
         String key = "article:" + article.getId();
-        article.setUpdateTime(LocalDateTime.now());
-        articleRedisTemplate.opsForValue().set(key, article);
+        // 检查 Redis 中是否有该文章的数据
+        if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+            article.setUpdateTime(LocalDateTime.now());
+            // 更新 Redis 中的数据
+            articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+        }
+        // 更新数据库中的数据
         articleMapper.update(article);
     }
 
-    // 根据id删除文章，先删除Redis数据，再删除数据库数据
     @Override
     public void deleteById(Integer id) {
         String key = "article:" + id;
-        articleRedisTemplate.delete(key);
+        // 检查 Redis 中是否有该文章的数据
+        if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+            // 删除 Redis 中的数据
+            articleRedisTemplate.delete(key);
+        }
+        // 删除数据库中的数据
         articleMapper.deleteById(id);
     }
 

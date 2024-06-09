@@ -1,20 +1,26 @@
 package com.eoffice.userBehavior.mapper;
 
+import com.eoffice.model.userBehavior.comments.vo.Comments;
+import com.eoffice.model.userBehavior.favorites.vo.Favorites;
+import com.eoffice.model.userBehavior.likes.vo.Likes;
+import com.eoffice.model.userBehavior.views.vo.Views;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserBehaviorMapper {
-    @Insert("INSERT INTO Likes (user_id, article_id) VALUES (#{userId}, #{articleId})")
-    void insertLike(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
 
-    @Insert("INSERT INTO Favorites (user_id, article_id) VALUES (#{userId}, #{articleId})")
-    void insertFavorite(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
+    @Insert("INSERT INTO Likes (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createTime})")
+    void insertLike(Likes likes);
 
-    @Insert("INSERT INTO Comments (user_id, article_id, content) VALUES (#{userId}, #{articleId}, #{content})")
-    void insertComment(@Param("userId") Integer userId, @Param("articleId") Integer articleId, @Param("content") String content);
+    @Insert("INSERT INTO Favorites (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createTime})")
+    void insertFavorite(Favorites favorites);
 
-    @Insert("INSERT INTO Views (user_id, article_id) VALUES (#{userId}, #{articleId})")
-    void insertView(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
+    @Insert("INSERT INTO Comments (user_id, article_id, content, created_time) VALUES (#{userId}, #{articleId}, #{content}, #{createTime})")
+    void insertComment(Comments comments);
+
+    @Insert("INSERT INTO Views (user_id, article_id, created_time) VALUES (#{userId}, #{articleId}, #{createTime})")
+    void insertView(Views views);
+
 
     @Select("SELECT COUNT(*) FROM Likes WHERE article_id = #{articleId}")
     int selectLikesCount(@Param("articleId") Integer articleId);
@@ -27,4 +33,21 @@ public interface UserBehaviorMapper {
 
     @Select("SELECT COUNT(*) FROM Views WHERE article_id = #{articleId}")
     int selectViewsCount(@Param("articleId") Integer articleId);
+
+    @Delete("DELETE FROM Likes WHERE user_id = #{userId} AND article_id = #{articleId}")
+    void deleteLikeByUserIdAndArticleId(Integer userId,Integer articleId);
+
+    @Delete("delete from Favorites where user_id = #{userId} AND article_id = #{articleId}")
+    void deleteFavoriteByUserIdAndArticleId(Integer userId,Integer articleId);
+
+    @Delete("delete from Comments where user_id = #{userId} AND article_id = #{articleId}")
+    void deleteCommentByUserIdAndArticleId(Integer userId,Integer articleId);
+
+    @Select("SELECT COUNT(*) FROM Likes WHERE user_id = #{userId} AND article_id = #{articleId}")
+    int selectLikeById(Integer userId, Integer articleId);
+
+    @Select("SELECT COUNT(*) FROM Favorites WHERE user_id = #{userId} AND article_id = #{articleId}")
+    int selectFavoritesById(Integer userId, Integer articleId);
+
 }
+
