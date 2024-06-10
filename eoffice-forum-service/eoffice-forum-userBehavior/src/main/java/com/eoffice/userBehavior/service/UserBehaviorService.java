@@ -1,9 +1,7 @@
 package com.eoffice.userBehavior.service;
 
 import com.eoffice.model.userBehavior.comments.vo.Comments;
-import com.eoffice.model.userBehavior.favorites.vo.Favorites;
-import com.eoffice.model.userBehavior.likes.vo.Likes;
-import com.eoffice.model.userBehavior.views.vo.Views;
+
 
 import java.util.Map;
 

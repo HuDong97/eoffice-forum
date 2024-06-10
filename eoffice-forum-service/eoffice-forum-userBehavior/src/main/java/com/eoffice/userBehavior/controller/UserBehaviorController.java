@@ -23,18 +23,18 @@ public class UserBehaviorController {
     }
 
     @PostMapping("/setLike")
-    public Result<String> setLikeArticle(@RequestParam Integer articleId) {
+    public Result<String> setLikeArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setLikeArticle(articleId);
         return Result.success();
     }
 
     @PostMapping("/setFavorite")
-    public Result<String> setFavoriteArticle(@RequestParam Integer articleId) {
+    public Result<String> setFavoriteArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setFavoriteArticle(articleId);
         return Result.success();
     }
     @PostMapping("/setView")
-    public Result<String> setViewArticle(@RequestParam Integer articleId) {
+    public Result<String> setViewArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setViewArticle(articleId);
         return Result.success();
     }
