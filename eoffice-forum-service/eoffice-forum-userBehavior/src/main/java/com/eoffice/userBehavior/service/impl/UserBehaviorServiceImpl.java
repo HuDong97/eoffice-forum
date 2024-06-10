@@ -43,6 +43,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
             likes.setUserId(userId);
         }
         userBehaviorMapper.insertLike(likes);
+        // 更新 Redis 中的 map 表信息
+        updateRedisMap(articleId, "likesCount");
 
     }
 
@@ -57,6 +59,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
             favorites.setUserId(userId);
         }
         userBehaviorMapper.insertFavorite(favorites);
+        // 更新 Redis 中的 map 表信息
+        updateRedisMap(articleId, "favoritesCount");
     }
 
 
@@ -71,6 +75,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         if (userId != null && viewMarked != 1) {
             views.setUserId(userId);
             userBehaviorMapper.insertView(views);
+            // 更新 Redis 中的 map 表信息
+            updateRedisMap(articleId, "viewsCount");
         }
     }
 
@@ -189,6 +195,21 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         }
         return viewed;
     }
+
+    private void updateRedisMap(Integer articleId, String behaviorType) {
+        String key = CACHE_PREFIX + articleId;
+        Map<String, Integer> counts = userBehaviorRedisTemplate.opsForValue().get(key);
+        if (counts == null) {
+            counts = new HashMap<>();
+        }
+
+        // 根据行为类型更新对应计数
+        counts.put(behaviorType, counts.getOrDefault(behaviorType, 0) + 1);
+
+        // 更新 Redis 中的 map 表信息
+        userBehaviorRedisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+    }
+
 
 
 }
