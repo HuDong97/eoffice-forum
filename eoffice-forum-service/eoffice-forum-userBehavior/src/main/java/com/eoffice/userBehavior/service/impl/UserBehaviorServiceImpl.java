@@ -67,12 +67,13 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         views.setArticleId(articleId);
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
-        if (userId != null) {
+        int viewMarked = selectViewsById(articleId);
+        if (userId != null && viewMarked != 1) {
             views.setUserId(userId);
+            userBehaviorMapper.insertView(views);
         }
-        userBehaviorMapper.insertView(views);
-
     }
+
 
     @Override
     public void setCommentArticle(Comments comments) {
@@ -174,6 +175,19 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
             throw new RuntimeException("收藏数异常");
         }
         return bookmarked;
+    }
+
+
+    public int selectViewsById(Integer articleId) {
+        // 从ThreadLocal获取当前登录用户id
+        Integer userId = ThreadLocalUtil.getUser("id");
+        //通过用户id和文章id查询用户是否收藏，返回1是点赞，0是没点赞
+
+        int viewed = userBehaviorMapper.selectViewsById(userId, articleId);
+        if (viewed != 1 && viewed != 0) {
+            throw new RuntimeException("观看数异常");
+        }
+        return viewed;
     }
 
 

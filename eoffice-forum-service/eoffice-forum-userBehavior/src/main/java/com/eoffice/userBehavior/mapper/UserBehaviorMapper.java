@@ -48,6 +48,8 @@ public interface UserBehaviorMapper {
 
     @Select("SELECT COUNT(*) FROM Favorites WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectFavoritesById(Integer userId, Integer articleId);
+    @Select("SELECT COUNT(*) FROM Views WHERE user_id = #{userId} AND article_id = #{articleId}")
+    int selectViewsById(Integer userId, Integer articleId);
 
 }
 
