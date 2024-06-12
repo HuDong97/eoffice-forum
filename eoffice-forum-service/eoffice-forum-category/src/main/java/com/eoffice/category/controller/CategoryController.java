@@ -18,40 +18,45 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+
+    //article微服务使用openfeign调用
+    @PutMapping("/article/{id}/increase")
+    public void increaseCategoryCount(@PathVariable("id") Integer categoryId) {
+        categoryService.increaseCategoryCount(categoryId);
+    }
+
+    @PutMapping("/article/{id}/decrease")
+    public void decreaseCategoryCount(@PathVariable("id") Integer oleCategoryId) {
+        categoryService.decreaseCategoryCount(oleCategoryId);
+    }
+
     //添加文章分类
     @PostMapping
-    public Result<String> add (@RequestBody @Validated (Category.Add.class)Category category){
+    public Result<String> add(@RequestBody @Validated(Category.Add.class) Category category) {
         categoryService.add(category);
         return Result.success();
     }
 
-
     //查询展示文章分类列表
     @GetMapping
-    public Result<List<Category>> list(){
+    public Result<List<Category>> list() {
         List<Category> c = categoryService.list();
         return Result.success(c);
     }
 
-
-
-
-
-
     //更新文章分类信息
     @PutMapping
-    public Result<String> update(@RequestBody @Validated(Category.Update.class) Category category){
+    public Result<String> update(@RequestBody @Validated(Category.Update.class) Category category) {
         categoryService.update(category);
         return Result.success();
     }
 
     //删除文章分类
     @DeleteMapping
-    public Result<String> delete(Integer id){
+    public Result<String> delete(Integer id) {
         categoryService.deleteById(id);
         return Result.success();
     }
-
 
 
 }

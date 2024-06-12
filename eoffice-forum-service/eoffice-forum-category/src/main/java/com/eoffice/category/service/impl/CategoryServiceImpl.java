@@ -60,4 +60,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Override
+    public void increaseCategoryCount(Integer categoryId) {
+        categoryMapper.increaseCategoryCount(categoryId);
+    }
+
+    @Override
+    public void decreaseCategoryCount(Integer oleCategoryId) {
+        categoryMapper.decreaseCategoryCount(oleCategoryId);
+    }
+
 }

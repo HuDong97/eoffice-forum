@@ -19,5 +19,9 @@ public interface CategoryService {
 
     //删除文章分类
     void deleteById(Integer id);
+
+    void increaseCategoryCount(Integer categoryId);
+
+    void decreaseCategoryCount(Integer oleCategoryId);
 }
 

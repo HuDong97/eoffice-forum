@@ -26,9 +26,12 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
+        String requestURI = request.getRequestURI();
+        System.out.println("Request URI: " + requestURI);
         String token = request.getHeader("Authorization");
         if (token == null || token.isEmpty()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            System.out.println("//////////运行到这//////");
             return false;
         }
 

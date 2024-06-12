@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.eoffice.api")
+@EnableFeignClients
 public class CategoryApplication {
 
     public static void main(String[] args) {

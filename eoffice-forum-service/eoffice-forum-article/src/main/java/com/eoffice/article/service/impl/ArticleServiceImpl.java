@@ -1,5 +1,6 @@
 package com.eoffice.article.service.impl;
 
+import com.eoffice.article.feign.CategoryClient;
 import com.eoffice.article.mapper.ArticleMapper;
 import com.eoffice.article.service.ArticleService;
 import com.eoffice.model.article.dtos.PageBean;
@@ -11,13 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
+
+    @Autowired
+    private CategoryClient categoryClient;
+
     private static final long CACHE_EXPIRATION_DAYS = 1;
     private final ArticleMapper articleMapper;
     private final RedisTemplate<String, Article> articleRedisTemplate;
@@ -28,19 +36,6 @@ public class ArticleServiceImpl implements ArticleService {
         this.articleRedisTemplate = articleRedisTemplate;
     }
 
-    // 新增文章
-    @Override
-    public void add(Article article) {
-        // 补充属性值
-        article.setCreateTime(LocalDateTime.now());
-        article.setUpdateTime(LocalDateTime.now());
-
-        // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
-        Integer userId = ThreadLocalUtil.getUser("id");
-        article.setCreateUser(userId);
-
-        articleMapper.add(article);
-    }
 
     // 通过id获取文章详情，先从Redis获取，如果不存在则从数据库获取，并将数据保存到Redis
     @Override
@@ -56,30 +51,101 @@ public class ArticleServiceImpl implements ArticleService {
         return article;
     }
 
+    // 新增文章
+    @Transactional
     @Override
-    public void update(Article article) {
-        String key = "article:" + article.getId();
-        // 检查 Redis 中是否有该文章的数据
-        if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
-            article.setUpdateTime(LocalDateTime.now());
-            // 更新 Redis 中的数据
-            articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
-        }
-        // 更新数据库中的数据
-        articleMapper.update(article);
+    public void add(Article article) {
+        // 补充属性值
+        article.setCreateTime(LocalDateTime.now());
+        article.setUpdateTime(LocalDateTime.now());
+
+        // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
+        Integer userId = ThreadLocalUtil.getUser("id");
+        article.setCreateUser(userId);
+
+
+        articleMapper.add(article);
+
+        Integer categoryId = article.getCategoryId();
+        categoryClient.increaseCategoryCount(categoryId);
+
     }
 
+    @Transactional
     @Override
+    public void update(Article article) {
+
+        Integer id = article.getId();
+        Integer oleCategoryId = articleMapper.findCategoryIdById(id);
+
+        Integer categoryId = article.getCategoryId();
+
+
+        System.out.println("--------数据库文章表里面的categoryId---------"+ oleCategoryId);
+
+        System.out.println("--------传入信息里面的categoryId---------"+ categoryId);
+        System.out.println("--------文章id---------"+ id);
+
+        // 如果新分类与旧分类相同
+        if (Objects.equals(categoryId, oleCategoryId)) {
+            String key = "article:" + article.getId();
+
+            // 检查 Redis 中是否有该文章的数据
+            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+                article.setUpdateTime(LocalDateTime.now());
+                // 更新 Redis 中的数据
+                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+            }
+
+            // 更新数据库中的数据
+            articleMapper.update(article);
+        } else {
+
+            String key = "article:" + article.getId();
+
+            // 检查 Redis 中是否有该文章的数据
+            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+                article.setUpdateTime(LocalDateTime.now());
+                // 更新 Redis 中的数据
+                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+            }
+
+            // 更新数据库中的数据
+            articleMapper.update(article);
+
+            System.out.println("旧表-1，新表+1");
+            // 如果分类不同，更新分类计数
+            categoryClient.decreaseCategoryCount(oleCategoryId);
+            categoryClient.increaseCategoryCount(categoryId);
+        }
+    }
+
+
+    @Override
+    @Transactional
     public void deleteById(Integer id) {
+        // 先获取文章的categoryId
+        Integer oleCategoryId = articleMapper.findCategoryIdById(id);
+
+        // 检查 categoryId 是否存在
+        if (oleCategoryId == null) {
+            throw new IllegalArgumentException("文章 " + id + " 不存在");
+        }
+
         String key = "article:" + id;
         // 检查 Redis 中是否有该文章的数据
         if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
             // 删除 Redis 中的数据
             articleRedisTemplate.delete(key);
         }
+
         // 删除数据库中的数据
         articleMapper.deleteById(id);
+
+        // 减少类别计数
+        categoryClient.decreaseCategoryCount(oleCategoryId);
     }
+
 
     // 条件分页列表查询
     @Override

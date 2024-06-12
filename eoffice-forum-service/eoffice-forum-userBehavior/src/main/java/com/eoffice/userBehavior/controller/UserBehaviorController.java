@@ -1,9 +1,6 @@
 package com.eoffice.userBehavior.controller;
 import com.eoffice.common.advice.Result;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
-import com.eoffice.model.userBehavior.favorites.vo.Favorites;
-import com.eoffice.model.userBehavior.likes.vo.Likes;
-import com.eoffice.model.userBehavior.views.vo.Views;
 import com.eoffice.userBehavior.service.UserBehaviorService;
 import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
