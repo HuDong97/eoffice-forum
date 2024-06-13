@@ -77,14 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Integer id = article.getId();
         Integer oleCategoryId = articleMapper.findCategoryIdById(id);
-
         Integer categoryId = article.getCategoryId();
-
-
-        System.out.println("--------数据库文章表里面的categoryId---------"+ oleCategoryId);
-
-        System.out.println("--------传入信息里面的categoryId---------"+ categoryId);
-        System.out.println("--------文章id---------"+ id);
 
         // 如果新分类与旧分类相同
         if (Objects.equals(categoryId, oleCategoryId)) {
@@ -113,7 +106,6 @@ public class ArticleServiceImpl implements ArticleService {
             // 更新数据库中的数据
             articleMapper.update(article);
 
-            System.out.println("旧表-1，新表+1");
             // 如果分类不同，更新分类计数
             categoryClient.decreaseCategoryCount(oleCategoryId);
             categoryClient.increaseCategoryCount(categoryId);

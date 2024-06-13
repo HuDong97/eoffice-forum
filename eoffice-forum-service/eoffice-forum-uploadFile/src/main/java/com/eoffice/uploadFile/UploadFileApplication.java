@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.eoffice.api")
+@EnableFeignClients
 public class UploadFileApplication {
     public static void main(String[] args) {
         SpringApplication.run(UploadFileApplication.class,args);
