@@ -21,7 +21,6 @@
 
     <modules>
         <module>eoffice-forum-common</module>
-        <module>eoffice-forum-feign-api</module>
         <module>eoffice-forum-gateway</module>
         <module>eoffice-forum-model</module>
         <module>eoffice-forum-service</module>

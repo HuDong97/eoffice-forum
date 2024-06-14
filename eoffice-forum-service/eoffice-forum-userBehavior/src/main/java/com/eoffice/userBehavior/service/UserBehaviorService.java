@@ -18,10 +18,11 @@ public interface UserBehaviorService {
 
     void deleteFavoriteByUserIdAndArticleId(Integer userId,Integer articleId);
 
-    void deleteCommentByUserIdAndArticleId(Integer userId,Integer articleId);
+    void deleteCommentById( Integer id);
 
 
     //获取用户是否点赞收藏
     Map<String, Integer> getArticleBehavior(Integer articleId);
 
+    Comments findByArticleId(Integer articleId);
 }

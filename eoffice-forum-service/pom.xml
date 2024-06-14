@@ -27,8 +27,11 @@
     </properties>
     <dependencies>
 
-
-
+        <!-- OpenFeign 依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
 
 
         <dependency>
@@ -43,11 +46,6 @@
             <version>1.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.dong</groupId>
-            <artifactId>eoffice-forum-feign-api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>com.dong</groupId>
@@ -112,10 +110,7 @@
         </dependency>
 
 
-
     </dependencies>
-
-
 
 
 </project>

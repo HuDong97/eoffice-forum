@@ -1,5 +1,6 @@
 package com.eoffice.userBehavior.service.impl;
 
+import com.eoffice.model.article.pojos.Article;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
 import com.eoffice.model.userBehavior.favorites.vo.Favorites;
 import com.eoffice.model.userBehavior.likes.vo.Likes;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,12 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     @Autowired
     @Qualifier("userBehaviorRedisTemplate")
     private RedisTemplate<String, Map<String, Integer>> userBehaviorRedisTemplate;
+
+
+    @Autowired
+    @Qualifier("commentRedisTemplate")
+    private RedisTemplate<String, Comments> commentRedisTemplate;
+
 
 
     @Override
@@ -134,9 +142,9 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
-    public void deleteCommentByUserIdAndArticleId(Integer userId, Integer articleId) {
+    public void deleteCommentById(Integer id) {
         // 删除数据库中的数据
-        userBehaviorMapper.deleteCommentByUserIdAndArticleId(userId, articleId);
+        userBehaviorMapper.deleteCommentById(id);
 
     }
 
@@ -153,6 +161,20 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         behaviorMap.put("bookmarked", bookmarked);
 
         return behaviorMap;
+    }
+
+    @Override
+    public Comments findByArticleId(Integer articleId) {
+        String key = "comment:" + articleId;
+        Comments commentAll = commentRedisTemplate.opsForValue().get(key);
+        if (commentAll == null) {
+            commentAll = userBehaviorMapper.findByArticleId(articleId);
+            if (commentAll != null) {
+                commentRedisTemplate.opsForValue().set(key, commentAll, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+            }
+        }
+
+       return commentAll;
     }
 
 
@@ -207,7 +229,6 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         // 更新 Redis 中的 map 表信息
         userBehaviorRedisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
     }
-
 
 
 }

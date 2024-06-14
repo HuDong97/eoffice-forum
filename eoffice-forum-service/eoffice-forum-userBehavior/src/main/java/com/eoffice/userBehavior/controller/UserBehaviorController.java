@@ -1,5 +1,6 @@
 package com.eoffice.userBehavior.controller;
 import com.eoffice.common.advice.Result;
+import com.eoffice.model.article.pojos.Article;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
 import com.eoffice.userBehavior.service.UserBehaviorService;
 import com.eoffice.utils.thread.ThreadLocalUtil;
@@ -59,9 +60,8 @@ public class UserBehaviorController {
     }
 
     @DeleteMapping("/deleteComment")
-    public Result<String> deleteCommentArticle(@RequestParam Integer articleId){
-        Integer userId = ThreadLocalUtil.getUser("id");
-        userBehaviorService.deleteCommentByUserIdAndArticleId(userId,articleId);
+    public Result<String> deleteCommentArticle(@RequestParam Integer id){
+        userBehaviorService.deleteCommentById(id);
         return Result.success();
     }
 
@@ -77,5 +77,13 @@ public class UserBehaviorController {
         Map<String, Integer> ArticleBehavior = userBehaviorService.getArticleBehavior(articleId);
         return Result.success(ArticleBehavior);
     }
+
+    //通过文章id获取当前文章评论
+    @GetMapping("/commentDetail")
+    public Result<Comments> allCommentDetail(Integer articleId){
+        Comments commentAll = userBehaviorService.findByArticleId(articleId);
+        return Result.success(commentAll);
+    }
+
 
 }

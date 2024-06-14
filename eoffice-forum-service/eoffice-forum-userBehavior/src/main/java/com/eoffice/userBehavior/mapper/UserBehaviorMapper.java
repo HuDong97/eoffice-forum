@@ -40,8 +40,8 @@ public interface UserBehaviorMapper {
     @Delete("delete from Favorites where user_id = #{userId} AND article_id = #{articleId}")
     void deleteFavoriteByUserIdAndArticleId(Integer userId,Integer articleId);
 
-    @Delete("delete from Comments where user_id = #{userId} AND article_id = #{articleId}")
-    void deleteCommentByUserIdAndArticleId(Integer userId,Integer articleId);
+    @Delete("delete from Comments where id =#{id} ")
+    void deleteCommentById( Integer id);
 
     @Select("SELECT COUNT(*) FROM Likes WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectLikeById(Integer userId, Integer articleId);
@@ -51,5 +51,7 @@ public interface UserBehaviorMapper {
     @Select("SELECT COUNT(*) FROM Views WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectViewsById(Integer userId, Integer articleId);
 
+    @Select("select * from Comments where article_id=#{articleId}")
+    Comments findByArticleId(Integer articleId);
 }
 

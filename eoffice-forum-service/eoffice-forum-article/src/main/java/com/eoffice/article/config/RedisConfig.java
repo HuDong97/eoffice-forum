@@ -1,6 +1,7 @@
 package com.eoffice.article.config;
 
 import com.eoffice.model.article.pojos.Article;
+import com.eoffice.model.userBehavior.comments.vo.Comments;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,5 +76,6 @@ public class RedisConfig {
         template.setHashValueSerializer(serializer);
         return template;
     }
+
 
 }

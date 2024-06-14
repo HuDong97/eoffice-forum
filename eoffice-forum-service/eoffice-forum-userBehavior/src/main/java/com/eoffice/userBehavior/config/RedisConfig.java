@@ -1,5 +1,11 @@
 package com.eoffice.userBehavior.config;
 
+import com.eoffice.model.article.pojos.Article;
+import com.eoffice.model.userBehavior.comments.vo.Comments;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +48,15 @@ public class RedisConfig {
         return new LettuceConnectionFactory(config);
     }
 
+
+    @Bean(name = "commentRedisConnectionFactory")
+    public RedisConnectionFactory commentRedisConnectionFactory() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+        config.setPassword(redisPassword);
+        config.setDatabase(3); // 文章存储在数据库2
+        return new LettuceConnectionFactory(config);
+    }
+
     @Bean(name = "redisTemplate")
     public StringRedisTemplate redisTemplate(@Qualifier("tokenRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
         // 在方法参数上添加@Qualifier注解，指定使用tokenRedisConnectionFactory
@@ -66,4 +81,24 @@ public class RedisConfig {
         template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Map.class));
         return template;
     }
+
+    @Bean(name = "commentRedisTemplate")
+    public RedisTemplate<String, Comments> articleRedisTemplate(@Qualifier("commentRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Comments> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+
+        // 配置Jackson2JsonRedisSerializer
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+
+        Jackson2JsonRedisSerializer<Article> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Article.class);
+
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+        return template;
+    }
+
 }
