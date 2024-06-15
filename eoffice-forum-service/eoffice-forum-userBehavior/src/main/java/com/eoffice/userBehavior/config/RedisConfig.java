@@ -4,7 +4,9 @@ import com.eoffice.model.article.pojos.Article;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -44,7 +48,7 @@ public class RedisConfig {
     public RedisConnectionFactory userBehaviorRedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setPassword(redisPassword);
-        config.setDatabase(1); // 用户行为存储在数据库1
+        config.setDatabase(1); // 用户行为（点赞收藏评论数）存储在数据库1
         return new LettuceConnectionFactory(config);
     }
 
@@ -53,7 +57,7 @@ public class RedisConfig {
     public RedisConnectionFactory commentRedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setPassword(redisPassword);
-        config.setDatabase(3); // 文章存储在数据库2
+        config.setDatabase(3); // 评论内容存储在数据库3
         return new LettuceConnectionFactory(config);
     }
 
@@ -82,23 +86,33 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean(name = "commentRedisTemplate")
-    public RedisTemplate<String, Comments> articleRedisTemplate(@Qualifier("commentRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Comments> template = new RedisTemplate<>();
+    @Bean(name = "commentListRedisTemplate")
+    public RedisTemplate<String, List<Comments>> commentListRedisTemplate(
+            @Qualifier("commentRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+
+        RedisTemplate<String, List<Comments>> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
 
         // 配置Jackson2JsonRedisSerializer
         ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+                .registerModule(new JavaTimeModule())  // 注册JavaTimeModule以支持Java 8的日期和时间类型
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // 禁用将日期序列化为时间戳
 
-        Jackson2JsonRedisSerializer<Article> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Article.class);
+        // 使用Jackson2JsonRedisSerializer来序列化和反序列化List<Comments>
+        JavaType commentsListType = objectMapper.getTypeFactory().constructCollectionType(List.class, Comments.class);
+        Jackson2JsonRedisSerializer<List<Comments>> serializer = new Jackson2JsonRedisSerializer<>(commentsListType);
 
+        // 设置template的序列化器
         template.setValueSerializer(serializer);
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(serializer);
+
         return template;
     }
+
+
+
+
 
 }

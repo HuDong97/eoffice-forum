@@ -6,6 +6,8 @@ import com.eoffice.model.userBehavior.likes.vo.Likes;
 import com.eoffice.model.userBehavior.views.vo.Views;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserBehaviorMapper {
 
@@ -52,6 +54,6 @@ public interface UserBehaviorMapper {
     int selectViewsById(Integer userId, Integer articleId);
 
     @Select("select * from Comments where article_id=#{articleId}")
-    Comments findByArticleId(Integer articleId);
+    List<Comments> findCommentByArticleId(Integer articleId);
 }
 

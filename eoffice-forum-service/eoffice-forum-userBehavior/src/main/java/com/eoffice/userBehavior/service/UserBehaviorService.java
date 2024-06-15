@@ -2,6 +2,7 @@ package com.eoffice.userBehavior.service;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
 
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserBehaviorService {
@@ -24,5 +25,7 @@ public interface UserBehaviorService {
     //获取用户是否点赞收藏
     Map<String, Integer> getArticleBehavior(Integer articleId);
 
-    Comments findByArticleId(Integer articleId);
+
+    List<Comments> findCommentByArticleId(Integer articleId);
+
 }

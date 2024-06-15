@@ -96,9 +96,9 @@ public class UserController {
             claims.put("permissions",loginUser.getPermissions());
             String token = JwtUtil.genToken(claims);
 
-            //把token存储到redis中，过期时间为24小时，与令牌过期时间相同
+            //把token存储到redis中，过期时间为7天，与令牌过期时间相同
             ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-            operations.set(token,token,24, TimeUnit.HOURS);
+            operations.set(token,token,7, TimeUnit.DAYS);
 
             ThreadLocalUtil.setUser(claims);  // 设置用户信息到ThreadLocal
 

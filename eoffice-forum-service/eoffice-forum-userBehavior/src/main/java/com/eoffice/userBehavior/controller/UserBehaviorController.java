@@ -1,12 +1,14 @@
 package com.eoffice.userBehavior.controller;
 import com.eoffice.common.advice.Result;
 import com.eoffice.model.article.pojos.Article;
+import com.eoffice.model.category.pojos.Category;
 import com.eoffice.model.userBehavior.comments.vo.Comments;
 import com.eoffice.userBehavior.service.UserBehaviorService;
 import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,8 +45,6 @@ public class UserBehaviorController {
         return Result.success();
     }
 
-
-
     @DeleteMapping("/deleteLike")
     public Result<String> deleteLikeArticle(@RequestParam Integer articleId){
         Integer userId = ThreadLocalUtil.getUser("id");
@@ -80,10 +80,11 @@ public class UserBehaviorController {
 
     //通过文章id获取当前文章评论
     @GetMapping("/commentDetail")
-    public Result<Comments> allCommentDetail(Integer articleId){
-        Comments commentAll = userBehaviorService.findByArticleId(articleId);
+    public Result<List<Comments>> allCommentDetail(Integer articleId){
+        List<Comments> commentAll = userBehaviorService.findCommentByArticleId(articleId);
         return Result.success(commentAll);
     }
+
 
 
 }

@@ -14,7 +14,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -33,9 +35,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Autowired
-    @Qualifier("commentRedisTemplate")
-    private RedisTemplate<String, Comments> commentRedisTemplate;
-
+    @Qualifier("commentListRedisTemplate")
+    private RedisTemplate<String, List<Comments>> commentListRedisTemplate;
 
 
     @Override
@@ -89,7 +90,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
     @Override
     public void setCommentArticle(Comments comments) {
-        comments.setCreateTime(LocalDateTime.now());
+        comments.setCreatedTime(LocalDateTime.now());
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
         if (userId != null) {
@@ -164,17 +165,26 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     }
 
     @Override
-    public Comments findByArticleId(Integer articleId) {
-        String key = "comment:" + articleId;
-        Comments commentAll = commentRedisTemplate.opsForValue().get(key);
-        if (commentAll == null) {
-            commentAll = userBehaviorMapper.findByArticleId(articleId);
-            if (commentAll != null) {
-                commentRedisTemplate.opsForValue().set(key, commentAll, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+    public List<Comments> findCommentByArticleId(Integer articleId) {
+        String redisKey = "article:comments:" + articleId;
+
+        // 尝试从Redis中获取评论列表
+        List<Comments> comments = commentListRedisTemplate.opsForValue().get(redisKey);
+        // 打印日志以确认comments配置
+        System.out.println("redis中的comments------------------------ " + comments);
+
+        if (comments == null) {
+            // 如果Redis中没有，从数据库中获取
+            comments = userBehaviorMapper.findCommentByArticleId(articleId);
+            System.out.println("数据库中的comments------------------------ " + comments);
+
+            if (comments != null && !comments.isEmpty()) {
+                // 将评论列表存储到Redis中，设置过期时间，1小时
+                commentListRedisTemplate.opsForValue().set(redisKey, comments, 1, TimeUnit.HOURS);
             }
         }
 
-       return commentAll;
+        return comments;
     }
 
 
