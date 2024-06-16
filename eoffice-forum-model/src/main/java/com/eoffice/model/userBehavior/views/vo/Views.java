@@ -17,5 +17,5 @@ public class Views {
     @NotNull
     private Integer articleId;
     @NotNull
-    private LocalDateTime createTime;
+    private LocalDateTime createdTime;
 }

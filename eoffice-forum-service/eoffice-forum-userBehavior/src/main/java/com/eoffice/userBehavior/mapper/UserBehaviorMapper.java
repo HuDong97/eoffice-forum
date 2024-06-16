@@ -11,16 +11,16 @@ import java.util.List;
 @Mapper
 public interface UserBehaviorMapper {
 
-    @Insert("INSERT INTO Likes (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createTime})")
+    @Insert("INSERT INTO Likes (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createdTime})")
     void insertLike(Likes likes);
 
-    @Insert("INSERT INTO Favorites (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createTime})")
+    @Insert("INSERT INTO Favorites (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createdTime})")
     void insertFavorite(Favorites favorites);
 
-    @Insert("INSERT INTO Comments (user_id, article_id, content, created_time) VALUES (#{userId}, #{articleId}, #{content}, #{createTime})")
+    @Insert("INSERT INTO Comments (user_id, article_id, content, created_time) VALUES (#{userId}, #{articleId}, #{content}, #{createdTime})")
     void insertComment(Comments comments);
 
-    @Insert("INSERT INTO Views (user_id, article_id, created_time) VALUES (#{userId}, #{articleId}, #{createTime})")
+    @Insert("INSERT INTO Views (user_id, article_id, created_time) VALUES (#{userId}, #{articleId}, #{createdTime})")
     void insertView(Views views);
 
 
@@ -55,5 +55,7 @@ public interface UserBehaviorMapper {
 
     @Select("select * from Comments where article_id=#{articleId}")
     List<Comments> findCommentByArticleId(Integer articleId);
+    @Select("select * from Comments where id=#{id}")
+    Comments findCommentById(Integer id);
 }
 

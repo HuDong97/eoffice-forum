@@ -42,7 +42,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     @Override
     public void setLikeArticle(Integer articleId) {
         Likes likes = new Likes();
-        likes.setCreateTime(LocalDateTime.now());
+        likes.setCreatedTime(LocalDateTime.now());
         likes.setArticleId(articleId);
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
@@ -58,7 +58,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     @Override
     public void setFavoriteArticle(Integer articleId) {
         Favorites favorites = new Favorites();
-        favorites.setCreateTime(LocalDateTime.now());
+        favorites.setCreatedTime(LocalDateTime.now());
         favorites.setArticleId(articleId);
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
@@ -74,7 +74,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     @Override
     public void setViewArticle(Integer articleId) {
         Views views = new Views();
-        views.setCreateTime(LocalDateTime.now());
+        views.setCreatedTime(LocalDateTime.now());
         views.setArticleId(articleId);
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
@@ -97,6 +97,29 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
             comments.setUserId(userId);
         }
         userBehaviorMapper.insertComment(comments);
+        // 更新 Redis 中的评论列表数据
+        updateRedisComments(comments.getArticleId(), comments);
+    }
+
+
+    private void updateRedisComments(Integer articleId, Comments newComment) {
+        String redisKey = "article:comments:" + articleId;
+
+        // 尝试从Redis中获取评论列表
+        List<Comments> comments = commentListRedisTemplate.opsForValue().get(redisKey);
+
+        if (comments == null) {
+            // 如果Redis中没有，从数据库中获取
+            comments = userBehaviorMapper.findCommentByArticleId(articleId);
+        }
+
+        if (comments != null) {
+            // 添加新评论到列表的开头
+            comments.add(0, newComment);
+
+            // 更新 Redis 中的评论列表数据
+            commentListRedisTemplate.opsForValue().set(redisKey, comments, 1, TimeUnit.HOURS);
+        }
     }
 
 
@@ -144,9 +167,30 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
     @Override
     public void deleteCommentById(Integer id) {
-        // 删除数据库中的数据
-        userBehaviorMapper.deleteCommentById(id);
+        // 获取要删除的评论信息
+        Comments comment = userBehaviorMapper.findCommentById(id);
+        if (comment != null) {
+            // 删除数据库中的数据
+            userBehaviorMapper.deleteCommentById(id);
 
+            // 从 Redis 中删除评论数据
+            deleteRedisComment(comment.getArticleId(), comment);
+        }
+    }
+
+    private void deleteRedisComment(Integer articleId, Comments deletedComment) {
+        String redisKey = "article:comments:" + articleId;
+
+        // 尝试从Redis中获取评论列表
+        List<Comments> comments = commentListRedisTemplate.opsForValue().get(redisKey);
+
+        if (comments != null) {
+            // 从列表中移除被删除的评论
+            comments.removeIf(comment -> comment.getId().equals(deletedComment.getId()));
+
+            // 更新 Redis 中的评论列表数据
+            commentListRedisTemplate.opsForValue().set(redisKey, comments, 1, TimeUnit.HOURS);
+        }
     }
 
     //获取用户是否点赞收藏
@@ -170,14 +214,10 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
         // 尝试从Redis中获取评论列表
         List<Comments> comments = commentListRedisTemplate.opsForValue().get(redisKey);
-        // 打印日志以确认comments配置
-        System.out.println("redis中的comments------------------------ " + comments);
 
         if (comments == null) {
             // 如果Redis中没有，从数据库中获取
             comments = userBehaviorMapper.findCommentByArticleId(articleId);
-            System.out.println("数据库中的comments------------------------ " + comments);
-
             if (comments != null && !comments.isEmpty()) {
                 // 将评论列表存储到Redis中，设置过期时间，1小时
                 commentListRedisTemplate.opsForValue().set(redisKey, comments, 1, TimeUnit.HOURS);
