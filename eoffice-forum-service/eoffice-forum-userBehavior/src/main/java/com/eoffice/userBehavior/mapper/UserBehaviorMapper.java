@@ -17,7 +17,7 @@ public interface UserBehaviorMapper {
     @Insert("INSERT INTO Favorites (user_id, article_id, created_time ) VALUES (#{userId}, #{articleId}, #{createdTime})")
     void insertFavorite(Favorites favorites);
 
-    @Insert("INSERT INTO Comments (user_id, article_id, content, created_time) VALUES (#{userId}, #{articleId}, #{content}, #{createdTime})")
+    @Insert("INSERT INTO Comments (id,user_id, article_id, content, created_time) VALUES (#{id},#{userId}, #{articleId}, #{content}, #{createdTime})")
     void insertComment(Comments comments);
 
     @Insert("INSERT INTO Views (user_id, article_id, created_time) VALUES (#{userId}, #{articleId}, #{createdTime})")
@@ -37,25 +37,27 @@ public interface UserBehaviorMapper {
     int selectViewsCount(@Param("articleId") Integer articleId);
 
     @Delete("DELETE FROM Likes WHERE user_id = #{userId} AND article_id = #{articleId}")
-    void deleteLikeByUserIdAndArticleId(Integer userId,Integer articleId);
+    void deleteLikeByUserIdAndArticleId(Integer userId, Integer articleId);
 
     @Delete("delete from Favorites where user_id = #{userId} AND article_id = #{articleId}")
-    void deleteFavoriteByUserIdAndArticleId(Integer userId,Integer articleId);
+    void deleteFavoriteByUserIdAndArticleId(Integer userId, Integer articleId);
 
     @Delete("delete from Comments where id =#{id} ")
-    void deleteCommentById( Integer id);
+    void deleteCommentById(String id);
 
     @Select("SELECT COUNT(*) FROM Likes WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectLikeById(Integer userId, Integer articleId);
 
     @Select("SELECT COUNT(*) FROM Favorites WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectFavoritesById(Integer userId, Integer articleId);
+
     @Select("SELECT COUNT(*) FROM Views WHERE user_id = #{userId} AND article_id = #{articleId}")
     int selectViewsById(Integer userId, Integer articleId);
 
     @Select("select * from Comments where article_id=#{articleId}")
     List<Comments> findCommentByArticleId(Integer articleId);
+
     @Select("select * from Comments where id=#{id}")
-    Comments findCommentById(Integer id);
+    Comments findCommentById(String id);
 }
 

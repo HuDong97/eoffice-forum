@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -40,6 +42,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
+    @Transactional
     public void setLikeArticle(Integer articleId) {
         Likes likes = new Likes();
         likes.setCreatedTime(LocalDateTime.now());
@@ -56,6 +59,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     }
 
     @Override
+    @Transactional
     public void setFavoriteArticle(Integer articleId) {
         Favorites favorites = new Favorites();
         favorites.setCreatedTime(LocalDateTime.now());
@@ -72,6 +76,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
+    @Transactional
     public void setViewArticle(Integer articleId) {
         Views views = new Views();
         views.setCreatedTime(LocalDateTime.now());
@@ -89,16 +94,19 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
+    @Transactional
     public void setCommentArticle(Comments comments) {
         comments.setCreatedTime(LocalDateTime.now());
+        comments.setId(UUID.randomUUID().toString());
         // 从ThreadLocal获取当前登录用户id，设置为文章创建人id
         Integer userId = ThreadLocalUtil.getUser("id");
         if (userId != null) {
             comments.setUserId(userId);
         }
         userBehaviorMapper.insertComment(comments);
-        // 更新 Redis 中的评论列表数据
+        // 更新 Redis 中的评论列表
         updateRedisComments(comments.getArticleId(), comments);
+
     }
 
 
@@ -124,6 +132,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
+    @Transactional
     public Map<String, Integer> getArticleCounts(Integer articleId) {
         String key = CACHE_PREFIX + articleId;
         Map<String, Integer> counts = userBehaviorRedisTemplate.opsForValue().get(key);
@@ -166,19 +175,20 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
 
     @Override
-    public void deleteCommentById(Integer id) {
-        // 获取要删除的评论信息
+    @Transactional
+    public void deleteCommentById(String id) {
+        // 查询要删除的评论信息
         Comments comment = userBehaviorMapper.findCommentById(id);
         if (comment != null) {
-            // 删除数据库中的数据
+            // 删除数据库中的评论数据
             userBehaviorMapper.deleteCommentById(id);
 
             // 从 Redis 中删除评论数据
-            deleteRedisComment(comment.getArticleId(), comment);
+            deleteRedisComment(comment.getArticleId(), id);
         }
     }
 
-    private void deleteRedisComment(Integer articleId, Comments deletedComment) {
+    private void deleteRedisComment(Integer articleId, String commentId) {
         String redisKey = "article:comments:" + articleId;
 
         // 尝试从Redis中获取评论列表
@@ -186,7 +196,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
         if (comments != null) {
             // 从列表中移除被删除的评论
-            comments.removeIf(comment -> comment.getId().equals(deletedComment.getId()));
+            comments.removeIf(comment -> comment.getId().equals(commentId));
 
             // 更新 Redis 中的评论列表数据
             commentListRedisTemplate.opsForValue().set(redisKey, comments, 1, TimeUnit.HOURS);
@@ -209,6 +219,7 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     }
 
     @Override
+    @Transactional
     public List<Comments> findCommentByArticleId(Integer articleId) {
         String redisKey = "article:comments:" + articleId;
 

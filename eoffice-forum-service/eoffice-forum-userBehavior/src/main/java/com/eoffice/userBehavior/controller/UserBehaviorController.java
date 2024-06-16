@@ -60,7 +60,7 @@ public class UserBehaviorController {
     }
 
     @DeleteMapping("/deleteComment")
-    public Result<String> deleteCommentArticle(@RequestParam Integer id){
+    public Result<String> deleteCommentArticle(@RequestParam String id){
         userBehaviorService.deleteCommentById(id);
         return Result.success();
     }
