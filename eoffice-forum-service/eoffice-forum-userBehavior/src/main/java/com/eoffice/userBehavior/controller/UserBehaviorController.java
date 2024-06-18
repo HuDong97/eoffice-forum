@@ -60,10 +60,19 @@ public class UserBehaviorController {
     }
 
     @DeleteMapping("/deleteComment")
-    public Result<String> deleteCommentArticle(@RequestParam String id){
+    public Result<String> deleteCommentArticle(@RequestParam String id, @RequestParam String userId){
+        Integer nowUserId = ThreadLocalUtil.getUser("id");
+
+        if (!userId.equals(String.valueOf(nowUserId))) {
+            // 如果前端传来的userId和当前登录用户的id不相同，则返回删除失败的结果
+            return Result.error("删除失败，用户身份验证失败");
+        }
+        // 如果userId和当前登录用户id相同，继续执行删除操作
         userBehaviorService.deleteCommentById(id);
-        return Result.success();
+        return Result.success("删除成功");
     }
+
+
 
     @GetMapping("/counts")
     public Result<Map<String, Integer>> getArticleCounts(@RequestParam Integer articleId) {
