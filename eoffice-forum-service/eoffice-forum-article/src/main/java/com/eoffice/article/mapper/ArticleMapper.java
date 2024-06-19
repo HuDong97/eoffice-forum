@@ -20,9 +20,8 @@ public interface ArticleMapper {
     List<Article> list(Integer userId, Integer categoryId, String state);
 
     //通过id获取文章详情
-    //@Select("select * from article where id = #{id}")
-    Article findById(Integer id);
-
+    @Select("SELECT * FROM article WHERE id = #{id}")
+    Article findArticleById(@Param("id") Integer id);
 
     //根据id删除文章
     //@Delete("delete from article where id=#{id}")

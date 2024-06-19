@@ -34,9 +34,9 @@
         delete from article where id=#{id}
     </delete>
     <!-- 通过id获取文章详情-->
-    <select id="findById" resultType="com.eoffice.model.article.pojos.Article">
+<!--    <select id="findArticleById" resultType="com.eoffice.model.article.pojos.Article">
         select * from article where id = #{id}
-    </select>
+    </select>-->
 
     <update id="update">
         <!--更新文章信息-->

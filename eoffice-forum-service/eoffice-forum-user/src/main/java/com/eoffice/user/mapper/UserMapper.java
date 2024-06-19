@@ -3,6 +3,7 @@ package com.eoffice.user.mapper;
 
 import com.eoffice.model.user.pojos.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 
 @Mapper
@@ -41,7 +42,7 @@ public interface UserMapper {
     //@Update("update user set email=#{newEmail} where username=#{username}")
     void updateEmail(String newEmail, String username);
 
-
-
+    @Select("select nickname from user where id=#{userId}")
+    String getNickNameByUserId(Integer userId);
 
 }

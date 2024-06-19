@@ -6,6 +6,8 @@ import com.eoffice.model.article.pojos.Article;
 import com.eoffice.article.service.ArticleService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/article")
@@ -47,9 +49,11 @@ public class ArticleController {
 
     //通过id获取文章详情
     @GetMapping("/detail")
-    public Result<Article> detail(Integer id){
-        Article articleAll = articleService.findById(id);
-        return Result.success(articleAll);
+    public Result<Map<String, Object>> detail(@RequestParam Integer id){
+        Map<String, Object> articleDetail = articleService.findArticleById(id);
+
+        System.out.println("--------controller层返回值-------"+articleDetail);
+        return Result.success(articleDetail);
     }
 
 

@@ -29,4 +29,7 @@ public interface UserService {
 
     //通过用户名更新邮箱
     void updateEmail(String newEmail, String username);
+
+    String getNickNameByUserId(Integer userId);
+
 }

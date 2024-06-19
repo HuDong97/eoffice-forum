@@ -1,6 +1,7 @@
 package com.eoffice.article.service.impl;
 
 import com.eoffice.article.feign.CategoryClient;
+import com.eoffice.article.feign.UserClient;
 import com.eoffice.article.mapper.ArticleMapper;
 import com.eoffice.article.service.ArticleService;
 import com.eoffice.model.article.dtos.PageBean;
@@ -15,42 +16,62 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
+    private static final long CACHE_EXPIRATION_DAYS = 1;
+
     @Autowired
     private CategoryClient categoryClient;
 
-    private static final long CACHE_EXPIRATION_DAYS = 1;
-    private final ArticleMapper articleMapper;
-    private final RedisTemplate<String, Article> articleRedisTemplate;
+    @Autowired
+    private UserClient userClient;
 
     @Autowired
-    public ArticleServiceImpl(ArticleMapper articleMapper, @Qualifier("articleRedisTemplate") RedisTemplate<String, Article> articleRedisTemplate) {
-        this.articleMapper = articleMapper;
-        this.articleRedisTemplate = articleRedisTemplate;
-    }
+    private ArticleMapper articleMapper;
 
-
-    // 通过id获取文章详情，先从Redis获取，如果不存在则从数据库获取，并将数据保存到Redis
+    @Autowired
+    @Qualifier("articleRedisTemplate")
+    private RedisTemplate<String, Map<String, Object>> articleRedisTemplate;
     @Override
-    public Article findById(Integer id) {
-        String key = "article:" + id;
-        Article article = articleRedisTemplate.opsForValue().get(key);
-        if (article == null) {
-            article = articleMapper.findById(id);
-            if (article != null) {
-                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
-            }
-        }
-        return article;
-    }
+    public Map<String, Object> findArticleById(Integer id) {
+        // 尝试从 Redis 中获取缓存
+        String cacheKey = "article:" + id;
+        Map<String, Object> resultMap = articleRedisTemplate.opsForValue().get(cacheKey);
+        System.out.println("--------redis缓存数据-------"+resultMap);
 
+        if (resultMap == null) {
+            // Redis 中不存在缓存，从数据库获取数据
+            Article article = articleMapper.findArticleById(id);
+            Integer userId = null;
+            String nickName = null;
+            if (article != null) {
+
+                userId = article.getCreateUser();
+                nickName = userClient.getNickNameByUserId(userId);
+            }
+
+            // 构建返回的Map
+            resultMap = new HashMap<>();
+            resultMap.put("article", article);
+            resultMap.put("nickName", nickName);
+
+            // 将结果放入 Redis 缓存，设置过期时间1天
+            articleRedisTemplate.opsForValue().set(cacheKey, resultMap, Duration.ofDays(CACHE_EXPIRATION_DAYS));
+        }
+
+        System.out.println("--------service层返回值-------"+resultMap);
+
+        return resultMap;
+    }
     // 新增文章
     @Transactional
     @Override
@@ -81,26 +102,35 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 如果新分类与旧分类相同
         if (Objects.equals(categoryId, oleCategoryId)) {
-            String key = "article:" + article.getId();
+            String cacheKey = "article:" + article.getId();
 
             // 检查 Redis 中是否有该文章的数据
-            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(cacheKey))) {
                 article.setUpdateTime(LocalDateTime.now());
+
+                Map<String, Object> resultMap;
+                resultMap = new HashMap<>();
+                resultMap.put("article", article);
+
                 // 更新 Redis 中的数据
-                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+                articleRedisTemplate.opsForValue().set(cacheKey, resultMap, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
             }
 
             // 更新数据库中的数据
             articleMapper.update(article);
         } else {
 
-            String key = "article:" + article.getId();
+            String cacheKey = "article:" + article.getId();
 
             // 检查 Redis 中是否有该文章的数据
-            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(key))) {
+            if (Boolean.TRUE.equals(articleRedisTemplate.hasKey(cacheKey))) {
                 article.setUpdateTime(LocalDateTime.now());
                 // 更新 Redis 中的数据
-                articleRedisTemplate.opsForValue().set(key, article, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+
+                Map<String, Object> resultMap;
+                resultMap = new HashMap<>();
+                resultMap.put("article", article);
+                articleRedisTemplate.opsForValue().set(cacheKey, resultMap, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
             }
 
             // 更新数据库中的数据

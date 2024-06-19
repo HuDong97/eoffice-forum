@@ -33,6 +33,13 @@ public class UserController {
     }
 
 
+
+    //article微服务通过id查询用户昵称,openfeign
+    @GetMapping("/nickName")
+    public String getNickNameByUserId(@RequestParam("userId") Integer userId) {
+        return userService.getNickNameByUserId(userId);
+    }
+
     //用户注册
     @PostMapping("/register")
     public Result<String> register(String username, String password, String email) {
@@ -108,7 +115,7 @@ public class UserController {
     }
 
 
-    //根据用户名查询用户,用户名从ThreadLocalUtil获取
+    //根据用户名查询当前用户,用户名从ThreadLocalUtil获取
     @GetMapping("/userInfo")
     public Result<User> userInfo() {
         String username = ThreadLocalUtil.getUser("username");

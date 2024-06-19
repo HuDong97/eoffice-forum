@@ -25,6 +25,7 @@ public class CategoryController {
         categoryService.increaseCategoryCount(categoryId);
     }
 
+    //article微服务使用openfeign调用
     @PutMapping("/article/{id}/decrease")
     public void decreaseCategoryCount(@PathVariable("id") Integer oleCategoryId) {
         categoryService.decreaseCategoryCount(oleCategoryId);

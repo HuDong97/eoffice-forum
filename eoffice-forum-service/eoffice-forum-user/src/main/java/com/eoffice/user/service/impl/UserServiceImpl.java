@@ -84,5 +84,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public String getNickNameByUserId(Integer userId) {
+
+
+        return userMapper.getNickNameByUserId(userId);
+    }
+
 
 }
