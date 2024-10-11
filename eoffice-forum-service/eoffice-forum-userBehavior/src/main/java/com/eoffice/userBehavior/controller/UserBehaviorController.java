@@ -25,38 +25,38 @@ public class UserBehaviorController {
     @PostMapping("/setLike")
     public Result<String> setLikeArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setLikeArticle(articleId);
-        return Result.success();
+        return Result.success("点赞成功");
     }
 
     @PostMapping("/setFavorite")
     public Result<String> setFavoriteArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setFavoriteArticle(articleId);
-        return Result.success();
+        return Result.success("收藏成功");
     }
     @PostMapping("/setView")
     public Result<String> setViewArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setViewArticle(articleId);
-        return Result.success();
+        return Result.success("");
     }
 
     @PostMapping("/setComment")
     public Result<String> setCommentArticle(@RequestBody Comments comments) {
         userBehaviorService.setCommentArticle(comments);
-        return Result.success();
+        return Result.success("评论成功");
     }
 
     @DeleteMapping("/deleteLike")
     public Result<String> deleteLikeArticle(@RequestParam Integer articleId){
         Integer userId = ThreadLocalUtil.getUser("id");
         userBehaviorService.deleteLikeByUserIdAndArticleId(userId,articleId);
-        return Result.success();
+        return Result.success("取消点赞");
     }
 
     @DeleteMapping("/deleteFavorite")
     public Result<String> deleteFavoriteArticle(@RequestParam Integer articleId){
         Integer userId = ThreadLocalUtil.getUser("id");
         userBehaviorService.deleteFavoriteByUserIdAndArticleId(userId,articleId);
-        return Result.success();
+        return Result.success("取消收藏");
     }
 
     @DeleteMapping("/deleteComment")

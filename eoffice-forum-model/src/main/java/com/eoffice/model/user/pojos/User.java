@@ -24,7 +24,6 @@ public class User {
     @JsonIgnore//让springmvc把当前对象转换成json字符串的时候,忽略password,最终的json字符串中就没有password这个属性了
     private String password;//密码
     @NotEmpty
-    @Pattern(regexp = "^\\S{2,10}$")
     private String nickname;//昵称
 
     @NotEmpty

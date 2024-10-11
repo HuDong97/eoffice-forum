@@ -69,7 +69,7 @@ public class UserController {
             // 用户名和邮箱均未占用，开始注册
             userService.register(username, password, email);
 
-            return Result.success();
+            return Result.success("注册成功");
         } else {
             // 构建错误信息
             String errorMessage;
@@ -91,7 +91,7 @@ public class UserController {
         User loginUser = userService.findByUserName(username);
         //判断该用户是否存在
         if (loginUser == null) {
-            return Result.error("用户名错误");
+            return Result.error("用户名或密码错误");//实际用户名错误
         }
 
         //判断密码是否正确  loginUser对象中的password是密文，对比加密后的密码是否相等
@@ -111,7 +111,7 @@ public class UserController {
 
             return Result.success(token);//返回jwt令牌
         }
-        return Result.error("密码错误");
+        return Result.error("用户名或密码错误");//实际密码错误
     }
 
 
@@ -127,9 +127,17 @@ public class UserController {
 
     //更新用户昵称
     @PatchMapping("/updateNickname")
-    public Result<String> updateNickname(@RequestParam  String nickname) {
+    public Result<String> updateNickname(@RequestParam String nickname) {
+        // 正则表达式校验：昵称必须是2-10位的非空字符串
+        if (!nickname.matches("^\\S{2,10}$")) {
+            return Result.error("昵称必须是2-10位");
+        }
+
+        // 如果校验通过，调用服务层更新昵称
         userService.updateNickname(nickname);
-        return Result.success();
+
+        // 返回成功信息，
+        return Result.success("昵称修改成功");
     }
 
 
@@ -137,7 +145,7 @@ public class UserController {
     @PatchMapping("/updateAvatar")
     public Result<String> updateAvatar(@RequestParam @URL String avatarUrl) {
         userService.updateAvatar(avatarUrl);
-        return Result.success();
+        return Result.success("更新成功");
     }
 
     //更新用户密码
@@ -172,7 +180,7 @@ public class UserController {
         //删除redis中对应的token
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
         operations.getOperations().delete(token);
-        return Result.success();
+        return Result.success("更新成功");
 
     }
 
@@ -203,7 +211,7 @@ public class UserController {
 
             // 调用service完成邮箱更新
             userService.updateEmail(newEmail,username);
-            return Result.success();
+            return Result.success("更新成功");
         } catch (Exception e) {
             // 处理异常，例如记录日志或返回适当的错误信息
             return Result.error("更新邮箱失败");
