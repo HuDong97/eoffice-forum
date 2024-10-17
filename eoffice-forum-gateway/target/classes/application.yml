@@ -39,3 +39,8 @@ spring:
           uri: lb://eoffice-forum-uploadFile
           predicates:
             - Path=/uploadFile/**
+
+        - id: eoffice-forum-userBehavior1
+          uri: lb://eoffice-forum-userBehavior
+          predicates:
+            - Path=/userBehavior/**

@@ -1,12 +1,12 @@
 server:
-  port: 18085
+  port: 18086
 
 spring:
   application:
-    name: eoffice-forum-uploadFile
+    name: eoffice-forum-userBehavior
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.196.129:13306/forum_user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://192.168.196.129:13306/forum_userBehavior?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: dong97
 
@@ -15,7 +15,6 @@ spring:
       host: 192.168.196.129
       port: 6379
       password: dong97
-
 
 
 mybatis:

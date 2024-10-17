@@ -6,14 +6,16 @@ spring:
     name: eoffice-forum-category
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://*******:13306/forum_category?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://192.168.196.129:13306/forum_category?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
-    password: ******
+    password: dong97
+
   data:
     redis:
-      host: ********
+      host: 192.168.196.129
       port: 6379
-      password: *****
+      password: dong97
+
 
 
 mybatis:

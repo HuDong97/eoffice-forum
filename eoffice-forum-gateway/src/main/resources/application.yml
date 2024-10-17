@@ -9,9 +9,9 @@ server:
 spring:
   data:
     redis:
-      host: *********
+      host: 192.168.196.129
       port: 6379
-      password: *****
+      password: dong97
   application:
     name: eoffice-forum-gateway # 服务名称
   cloud:
@@ -39,3 +39,8 @@ spring:
           uri: lb://eoffice-forum-uploadFile
           predicates:
             - Path=/uploadFile/**
+
+        - id: eoffice-forum-userBehavior1
+          uri: lb://eoffice-forum-userBehavior
+          predicates:
+            - Path=/userBehavior/**
