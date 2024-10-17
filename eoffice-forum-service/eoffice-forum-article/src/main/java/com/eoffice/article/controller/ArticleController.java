@@ -24,14 +24,14 @@ public class ArticleController {
     @PostMapping
     public Result<String> add(@RequestBody Article article) {
         articleService.add(article);
-        return Result.success("新增成功");
+        return Result.success();
     }
 
     //更新文章
     @PutMapping
     public Result<String> update(@RequestBody  Article article){
         articleService.update(article);
-        return Result.success("更新成功");
+        return Result.success();
     }
 
 
@@ -60,7 +60,7 @@ public class ArticleController {
     @DeleteMapping
     public Result<String> delete(Integer id){
         articleService.deleteById(id);
-        return Result.success("删除成功");
+        return Result.success();
     }
 
 

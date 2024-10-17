@@ -25,38 +25,38 @@ public class UserBehaviorController {
     @PostMapping("/setLike")
     public Result<String> setLikeArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setLikeArticle(articleId);
-        return Result.success("点赞成功");
+        return Result.success();
     }
 
     @PostMapping("/setFavorite")
     public Result<String> setFavoriteArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setFavoriteArticle(articleId);
-        return Result.success("收藏成功");
+        return Result.success();
     }
     @PostMapping("/setView")
     public Result<String> setViewArticle(@RequestParam("articleId") Integer articleId) {
         userBehaviorService.setViewArticle(articleId);
-        return Result.success("");
+        return Result.success();
     }
 
     @PostMapping("/setComment")
     public Result<String> setCommentArticle(@RequestBody Comments comments) {
         userBehaviorService.setCommentArticle(comments);
-        return Result.success("评论成功");
+        return Result.success();
     }
 
     @DeleteMapping("/deleteLike")
     public Result<String> deleteLikeArticle(@RequestParam Integer articleId){
         Integer userId = ThreadLocalUtil.getUser("id");
         userBehaviorService.deleteLikeByUserIdAndArticleId(userId,articleId);
-        return Result.success("取消点赞");
+        return Result.success();
     }
 
     @DeleteMapping("/deleteFavorite")
     public Result<String> deleteFavoriteArticle(@RequestParam Integer articleId){
         Integer userId = ThreadLocalUtil.getUser("id");
         userBehaviorService.deleteFavoriteByUserIdAndArticleId(userId,articleId);
-        return Result.success("取消收藏");
+        return Result.success();
     }
 
     @DeleteMapping("/deleteComment")
@@ -69,7 +69,7 @@ public class UserBehaviorController {
         }
         // 如果userId和当前登录用户id相同，继续执行删除操作
         userBehaviorService.deleteCommentById(id);
-        return Result.success("删除成功");
+        return Result.success();
     }
 
 

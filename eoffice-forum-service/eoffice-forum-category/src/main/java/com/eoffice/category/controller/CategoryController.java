@@ -35,7 +35,7 @@ public class CategoryController {
     @PostMapping
     public Result<String> add(@RequestBody @Validated(Category.Add.class) Category category) {
         categoryService.add(category);
-        return Result.success("添加成功");
+        return Result.success();
     }
 
     //查询展示文章分类列表
@@ -49,14 +49,14 @@ public class CategoryController {
     @PutMapping
     public Result<String> update(@RequestBody @Validated(Category.Update.class) Category category) {
         categoryService.update(category);
-        return Result.success("更新成功");
+        return Result.success();
     }
 
     //删除文章分类
     @DeleteMapping
     public Result<String> delete(Integer id) {
         categoryService.deleteById(id);
-        return Result.success("删除成功");
+        return Result.success();
     }
 
 
