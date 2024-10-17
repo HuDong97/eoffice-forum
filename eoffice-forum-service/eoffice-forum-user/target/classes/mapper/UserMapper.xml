@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 映射器的命名空间-->
+<mapper namespace="com.eoffice.user.mapper.UserMapper">
+
+    <!--通过输入邮箱查询用户 -->
+    <select id="findByEmail" resultType="com.eoffice.model.user.pojos.User">
+        select *
+        from user
+        where email = #{email}
+    </select>
+
+    <!--   通过用户名查询用户-->
+    <select id="findByUserName" resultType="com.eoffice.model.user.pojos.User">
+        select *
+        from user
+        where username = #{username}
+    </select>
+
+    <!--  向数据库插入用户名 密码和邮箱等创建时间和更新时间为当前时间-->
+    <insert id="add">
+        insert into user(username, password, email, create_time, update_time)
+        values (#{username}, #{password}, #{email}, now(), now())
+    </insert>
+
+    <!--  更新数据库用户昵称-->
+    <update id="updateNickname">
+        update user set nickname=#{nickname},update_time=now() where id=#{userId}
+    </update>
+
+    <!-- 更新数据库用户头像-->
+    <update id="updateAvatar">
+        update user
+        set user_pic=#{avatarUrl},
+            update_time=now()
+        where id = #{userId}
+    </update>
+
+    <!-- 更新数据库用户密码-->
+    <update id="updatePwd">
+        update user
+        set password=#{md5String},
+            update_time=now()
+        where id = #{userId}
+    </update>
+
+    <!--   通过用户名查询邮箱-->
+    <select id="findEmailByUserName" resultType="String">
+        select email
+        from user
+        where username = #{username}
+    </select>
+
+
+    <!--更新用户邮箱-->
+    <update id="updateEmail">
+        update user
+        set email=#{newEmail}
+        where username = #{username}
+    </update>
+
+
+
+</mapper>
+
+

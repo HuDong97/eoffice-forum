@@ -1,0 +1,34 @@
+server:
+  port: 18082
+
+spring:
+  application:
+    name: eoffice-forum-article
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.196.129:13306/forum_article?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: dong97
+
+  data:
+    redis:
+      host: 192.168.196.129
+      port: 6379
+      password: dong97
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true #开启驼峰命名和下划线命名的自动转换
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #选择MyBatis 内置的 StdOutImpl 来将日志输出到控制台。
+
+
+
+
+
+
+
+
+
+
+
