@@ -107,6 +107,9 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         // 更新 Redis 中的评论列表
         updateRedisComments(comments.getArticleId(), comments);
 
+        // 更新 Redis 中的评论数
+        updateRedisMap(comments.getArticleId(), "commentsCount");
+
     }
 
 
@@ -162,6 +165,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     public void deleteLikeByUserIdAndArticleId(Integer userId, Integer articleId) {
         // 删除数据库中的数据
         userBehaviorMapper.deleteLikeByUserIdAndArticleId(userId, articleId);
+        // 更新 Redis 中的 map 表信息（点赞数 -1）
+        updateRedisMapOnRemove(articleId, "likesCount");
 
     }
 
@@ -170,6 +175,8 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
     public void deleteFavoriteByUserIdAndArticleId(Integer userId, Integer articleId) {
         // 删除数据库中的数据
         userBehaviorMapper.deleteFavoriteByUserIdAndArticleId(userId, articleId);
+        // 更新 Redis 中的 map 表信息（收藏数 -1）
+        updateRedisMapOnRemove(articleId, "favoritesCount");
 
     }
 
@@ -185,6 +192,9 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
 
             // 从 Redis 中删除评论数据
             deleteRedisComment(comment.getArticleId(), id);
+
+            // 更新 Redis 中的评论数（减少 1）
+            updateRedisMapOnRemove(comment.getArticleId(), "commentsCount");
         }
     }
 
@@ -290,6 +300,21 @@ public class UserBehaviorServiceImpl implements UserBehaviorService {
         // 更新 Redis 中的 map 表信息
         userBehaviorRedisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
     }
+
+    private void updateRedisMapOnRemove(Integer articleId, String behaviorType) {
+        String key = CACHE_PREFIX + articleId;
+        Map<String, Integer> counts = userBehaviorRedisTemplate.opsForValue().get(key);
+        if (counts == null) {
+            counts = new HashMap<>();
+        }
+
+        // 根据行为类型减去对应计数，确保不会出现负数
+        counts.put(behaviorType, Math.max(counts.getOrDefault(behaviorType, 0) - 1, 0));
+
+        // 更新 Redis 中的 map 表信息
+        userBehaviorRedisTemplate.opsForValue().set(key, counts, CACHE_EXPIRATION_DAYS, TimeUnit.DAYS);
+    }
+
 
 
 }
