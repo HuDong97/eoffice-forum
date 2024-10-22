@@ -114,6 +114,23 @@ public class UserController {
         return Result.error("密码错误");
     }
 
+    //用户退出登录时清除redis缓存
+    @PostMapping("/logout")
+    public Result<String> logout(@RequestHeader("Authorization") String token) {
+
+        if (token == null || token.isEmpty()) {
+            return Result.error("缺少必要的参数");
+        }
+
+        // 从 Redis 中删除 token
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
+
+        // 这里可以返回成功的消息
+        return Result.success("退出登录成功");
+    }
+
+
 
     //根据用户名查询用户,用户名从ThreadLocalUtil获取
     @GetMapping("/userInfo")
