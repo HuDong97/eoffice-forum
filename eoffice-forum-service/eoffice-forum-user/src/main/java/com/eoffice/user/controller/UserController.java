@@ -128,6 +128,7 @@ public class UserController {
 
         // 这里可以返回成功的消息
         return Result.success("退出登录成功");
+
     }
 
 
