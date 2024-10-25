@@ -66,7 +66,6 @@ public class UserController {
         // 3. 生成验证码
         String code = generateVerificationCode();
 
-
         // 4. 发送验证码
         boolean sendSuccess = sendVerificationCode(email, code); // 该方法封装了发送邮件的逻辑
         if (!sendSuccess) {
