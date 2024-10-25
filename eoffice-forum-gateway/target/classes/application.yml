@@ -40,6 +40,16 @@ spring:
           predicates:
             - Path=/uploadFile/**
 
+        - id: eoffice-forum-tools1
+          uri: lb://eoffice-forum-tools
+          predicates:
+            - Path=/chat/**
+
+        - id: eoffice-forum-userBehavior1
+          uri: lb://eoffice-forum-userBehavior
+          predicates:
+            - Path=/userBehavior/**
+
         - id: eoffice-forum-userBehavior1
           uri: lb://eoffice-forum-userBehavior
           predicates:
