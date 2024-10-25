@@ -4,6 +4,7 @@ package com.eoffice.user.interceptors;
 import com.eoffice.utils.common.JwtUtil;
 import com.eoffice.utils.thread.ThreadLocalUtil;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,8 @@ import java.util.Map;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
-    private final StringRedisTemplate stringRedisTemplate;
-
-    public TokenInterceptor(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
@@ -33,7 +31,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         try {
-            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+            ValueOperations<String, String> operations = redisTemplate.opsForValue();
             String redisToken = operations.get(token);
             if (redisToken == null) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
