@@ -43,13 +43,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     //更新用户昵称
     @Override
     public void updateNickname(String nickname) {
 
         Integer userId = ThreadLocalUtil.getUser("id");
-        userMapper.updateNickname(nickname,userId);
+        userMapper.updateNickname(nickname, userId);
     }
 
     //实现接口方法，更新用户头像，id从ThreadLocalUtil获取
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
     //通过用户名更新邮箱
     @Override
     public void updateEmail(String newEmail, String username) {
-        userMapper.updateEmail( newEmail,  username);
+        userMapper.updateEmail(newEmail, username);
 
     }
 
@@ -89,6 +88,15 @@ public class UserServiceImpl implements UserService {
 
 
         return userMapper.getNickNameByUserId(userId);
+    }
+
+
+    //通过邮箱重置密码
+    @Override
+    public void resetPassword( String email,String newPassword) {
+
+        userMapper.resetPassword(Md5Util.getMD5String(newPassword), email);
+
     }
 
 

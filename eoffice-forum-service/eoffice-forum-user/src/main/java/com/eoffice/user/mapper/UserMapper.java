@@ -4,6 +4,7 @@ package com.eoffice.user.mapper;
 import com.eoffice.model.user.pojos.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 
 @Mapper
@@ -44,5 +45,12 @@ public interface UserMapper {
 
     @Select("select nickname from user where id=#{userId}")
     String getNickNameByUserId(Integer userId);
+
+
+    //通过邮箱重置密码
+    @Update("update user set password=#{md5String},update_time=now() where email=#{email}")
+    void resetPassword(String md5String, String email);
+
+
 
 }

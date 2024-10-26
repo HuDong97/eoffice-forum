@@ -15,9 +15,9 @@ public interface UserService {
     void register(String username, String password, String email);
 
 
-
     //更新用户昵称
     void updateNickname(String nickname);
+
     //更新用户头像
     void updateAvatar(String avatarUrl);
 
@@ -32,4 +32,6 @@ public interface UserService {
 
     String getNickNameByUserId(Integer userId);
 
+    //重置密码
+    void resetPassword(String email,String newPassword);
 }

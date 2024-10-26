@@ -75,7 +75,7 @@ public class UserController {
         // 5. 将验证码存储到 Redis（设置有效期为5分钟）
         ValueOperations<String, String> operations = emailRedisTemplate.opsForValue();
         String redisKey = "reset_code:" + email; // Redis的key格式：reset_code:email
-        operations.set(redisKey, code, 5, TimeUnit.MINUTES);
+        operations.set(redisKey, code, 50000000, TimeUnit.MINUTES);
 
         return Result.success("验证码已发送，请查收邮箱");
     }
@@ -118,10 +118,10 @@ public class UserController {
         }
 
         // 5. 更新密码并清除Redis中的验证码
-        userService.updatePwd(newPassword);
+        userService.resetPassword(email,newPassword);
         emailRedisTemplate.delete(redisKey);  // 删除验证码缓存
 
-        return Result.success("密码重置成功");
+        return Result.success();
     }
 
 

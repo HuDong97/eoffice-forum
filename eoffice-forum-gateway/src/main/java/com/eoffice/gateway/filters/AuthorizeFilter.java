@@ -33,12 +33,14 @@ public class AuthorizeFilter implements Ordered, GlobalFilter {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
 
-        //判断是否是登录
-        if (request.getURI().getPath().contains("/user/login") || request.getURI().getPath().contains("/user/register")) {
+        //判断是否是登录、注册、重置密码或获取重置码请求
+        if (request.getURI().getPath().contains("/user/login") ||
+                request.getURI().getPath().contains("/user/register") ||
+                request.getURI().getPath().contains("/user/resetPassword") ||
+                request.getURI().getPath().contains("/user/getResetCode")) {
             //放行
             return chain.filter(exchange);
         }
-
         // 从请求头中获取 Authorization 参数
         String token = request.getHeaders().getFirst("Authorization");
         // 验证 token，查看是否持有有效的 JWT 令牌
