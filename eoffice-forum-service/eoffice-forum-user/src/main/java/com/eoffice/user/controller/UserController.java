@@ -57,28 +57,24 @@ public class UserController {
             return Result.error("邮箱格式不正确，仅支持@163.com,@qq.com,@gmail.com,@hotmail.com");
         }
 
-        // 2. 查询邮箱是否存在
-        User user = userService.findByEmail(email);
-        if (user == null) {
-            return Result.error("该邮箱未注册");
-        }
 
-        // 3. 生成验证码
+        // 2. 生成验证码
         String code = generateVerificationCode();
 
-        // 4. 发送验证码
+        // 3. 发送验证码
         boolean sendSuccess = sendVerificationCode(email, code); // 该方法封装了发送邮件的逻辑
         if (!sendSuccess) {
             return Result.error("验证码发送失败");
         }
 
-        // 5. 将验证码存储到 Redis（设置有效期为5分钟）
+        // 4. 将验证码存储到 Redis（设置有效期为5分钟）
         ValueOperations<String, String> operations = emailRedisTemplate.opsForValue();
         String redisKey = "reset_code:" + email; // Redis的key格式：reset_code:email
-        operations.set(redisKey, code, 50000000, TimeUnit.MINUTES);
+        operations.set(redisKey, code, 5, TimeUnit.MINUTES);
 
         return Result.success("验证码已发送，请查收邮箱");
     }
+
     private String generateVerificationCode() {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000); // 生成6位随机数字
@@ -86,7 +82,7 @@ public class UserController {
     }
 
     private boolean sendVerificationCode(String email, String code) {
-        String subject = "重置密码验证码";
+        String subject = "Eoffice验证码";
         String body = "您的验证码是: " + code + "，有效期5分钟。";
         return emailService.sendEmail(email, subject, body);
     }
@@ -97,41 +93,53 @@ public class UserController {
     public Result<String> resetPassword(@RequestParam String email,
                                         @RequestParam String code,
                                         @RequestParam String newPassword) {
-        // 1. 从 Redis 中获取存储的验证码
+
+        // 1. 查询邮箱是否存在
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return Result.error("该邮箱未注册");
+        }
+
+        // 2. 从 Redis 中获取存储的验证码
+        System.out.println("邮箱" + email);
+        System.out.println("验证码" + code);
+
         String redisKey = "reset_code:" + email;
         ValueOperations<String, String> operations = emailRedisTemplate.opsForValue();
         String storedCode = operations.get(redisKey);
 
-        // 2. 检查验证码是否有效
+        // 3. 检查验证码是否有效
         if (storedCode == null) {
             return Result.error("验证码已过期或无效");
         }
+        System.out.println("验证码" + storedCode);
 
-        // 3. 验证输入的验证码是否正确
+        // 4. 验证输入的验证码是否正确
         if (!storedCode.equals(code)) {
             return Result.error("验证码错误");
         }
 
-        // 4. 验证新密码的格式
+        // 5. 验证新密码的格式
         if (!MessageValidator.isValidPassword(newPassword)) {
             return Result.error("密码长度必须在5到16位之间，仅支持数字、英文大小写字母以及@#$%");
         }
 
-        // 5. 更新密码并清除Redis中的验证码
-        userService.resetPassword(email,newPassword);
+        // 6. 更新密码并清除Redis中的验证码
+        userService.resetPassword(email, newPassword);
         emailRedisTemplate.delete(redisKey);  // 删除验证码缓存
 
         return Result.success();
     }
 
 
-
-
     //用户注册
     @PostMapping("/register")
-    public Result<String> register(String username, String password, String email) {
+    public Result<String> register(@RequestParam String username,
+                                   @RequestParam String password,
+                                   @RequestParam String email,
+                                   @RequestParam String code) {
 
-        //调用校验工具类
+        // 调用校验工具类
         if (!MessageValidator.isValidUsername(username)) {
             return Result.error("用户名长度必须在4到16位之间,仅支持数字、中文、英文大小写字母以及@#$%");
         }
@@ -141,32 +149,40 @@ public class UserController {
         if (!MessageValidator.isValidEmail(email)) {
             return Result.error("仅支持@163.com,@qq.com,@gmail.com,@hotmail.com");
         }
-        //通过输入邮箱查找用户
-        if (userService.findByEmail(email) != null) {
+
+        // 通过输入邮箱查找用户
+        User existingUserByEmail = userService.findByEmail(email);
+        if (existingUserByEmail != null) {
             return Result.error("邮箱已占用");
         }
 
+        // 从 Redis 中获取存储的验证码
+        String redisKey = "reset_code:" + email;
+        ValueOperations<String, String> operations = emailRedisTemplate.opsForValue();
+        String storedCode = operations.get(redisKey);
 
-
-        User existingUserByUsername = userService.findByUserName(username);
-        User existingUserByEmail = userService.findByEmail(email);
-
-        if (existingUserByUsername == null && existingUserByEmail == null) {
-
-            // 用户名和邮箱均未占用，开始注册
-            userService.register(username, password, email);
-
-            return Result.success();
-        } else {
-            // 构建错误信息
-            String errorMessage;
-            if (existingUserByUsername != null) {
-                errorMessage = "用户名已被占用";
-            } else {
-                errorMessage = "邮箱已被占用";
-            }
-            return Result.error(errorMessage);
+        // 检查验证码是否有效
+        if (storedCode == null) {
+            return Result.error("验证码已过期或无效");
         }
+
+        // 验证输入的验证码是否正确
+        if (!storedCode.equals(code)) {
+            return Result.error("验证码错误");
+        }
+
+        // 清除Redis中的验证码
+        emailRedisTemplate.delete(redisKey);  // 删除验证码缓存
+
+        // 查询用户名是否已存在
+        User existingUserByUsername = userService.findByUserName(username);
+        if (existingUserByUsername != null) {
+            return Result.error("用户名已被占用");
+        }
+
+        // 开始注册
+        userService.register(username, password, email);
+        return Result.success();
     }
 
 
@@ -187,12 +203,12 @@ public class UserController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", loginUser.getId());
             claims.put("username", loginUser.getUsername());
-            claims.put("permissions",loginUser.getPermissions());
+            claims.put("permissions", loginUser.getPermissions());
             String token = JwtUtil.genToken(claims);
 
             //把token存储到redis中，过期时间为7天，与令牌过期时间相同
             ValueOperations<String, String> operations = redisTemplate.opsForValue();
-            operations.set(token,token,7, TimeUnit.DAYS);
+            operations.set(token, token, 7, TimeUnit.DAYS);
 
             ThreadLocalUtil.setUser(claims);  // 设置用户信息到ThreadLocal
 
@@ -219,7 +235,6 @@ public class UserController {
     }
 
 
-
     //根据用户名查询用户,用户名从ThreadLocalUtil获取
     @GetMapping("/userInfo")
     public Result<User> userInfo() {
@@ -227,7 +242,6 @@ public class UserController {
         User user = userService.findByUserName(username);
         return Result.success(user);
     }
-
 
 
     //更新用户昵称
@@ -255,7 +269,7 @@ public class UserController {
 
     //更新用户密码
     @PatchMapping("/updatePwd")
-    public Result<String> updatePwd(@RequestBody Map<String, String> params,@RequestHeader("Authorization") String token) {
+    public Result<String> updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //1.校验参数
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
@@ -315,7 +329,7 @@ public class UserController {
             }
 
             // 调用service完成邮箱更新
-            userService.updateEmail(newEmail,username);
+            userService.updateEmail(newEmail, username);
             return Result.success();
         } catch (Exception e) {
             // 处理异常，例如记录日志或返回适当的错误信息
