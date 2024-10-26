@@ -21,8 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(tokenInterceptor)
                 //设置拦截的路径
                 .addPathPatterns("/**")
-                //设置排除的路径登录接口和注册接口
-                .excludePathPatterns("/user/login", "/user/register","/user/nickName");
+                //设置排除的路径登录接口和注册接口，获取验证码接口，重置密码接口
+                .excludePathPatterns("/user/login", "/user/register","/user/nickName","/user/getResetCode","/user/resetPassword");
 
 
     }
