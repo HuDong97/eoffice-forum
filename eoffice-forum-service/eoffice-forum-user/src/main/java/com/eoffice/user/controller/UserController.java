@@ -91,9 +91,13 @@ public class UserController {
         return emailService.sendEmail(email, subject, body);
     }
 
-    @PostMapping("/verifyResetCode")
-    public Result<String> verifyResetCode(@RequestParam String email, @RequestParam String code) {
-        // 1. 从 Redis 获取存储的验证码
+
+    // 重置用户密码
+    @PostMapping("/resetPassword")
+    public Result<String> resetPassword(@RequestParam String email,
+                                        @RequestParam String code,
+                                        @RequestParam String newPassword) {
+        // 1. 从 Redis 中获取存储的验证码
         String redisKey = "reset_code:" + email;
         ValueOperations<String, String> operations = emailRedisTemplate.opsForValue();
         String storedCode = operations.get(redisKey);
@@ -108,8 +112,16 @@ public class UserController {
             return Result.error("验证码错误");
         }
 
-        // 验证成功
-        return Result.success("验证码验证成功");
+        // 4. 验证新密码的格式
+        if (!MessageValidator.isValidPassword(newPassword)) {
+            return Result.error("密码长度必须在5到16位之间，仅支持数字、英文大小写字母以及@#$%");
+        }
+
+        // 5. 更新密码并清除Redis中的验证码
+        userService.updatePwd(newPassword);
+        emailRedisTemplate.delete(redisKey);  // 删除验证码缓存
+
+        return Result.success("密码重置成功");
     }
 
 
